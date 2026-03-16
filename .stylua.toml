@@ -1,7 +1,133 @@
-column_width = 160
+# ============================================================================
+# StyLua Configuration File - Complete Options Reference
+# Documentation: https://github.com/JohnnyMorganz/StyLua
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# Lua Syntax Version
+# ----------------------------------------------------------------------------
+# Specifies which Lua syntax version to format for
+# Options: Lua51, Lua52, Lua53, Lua54, LuaJIT, All
+# - Lua51: Lua 5.1 syntax
+# - Lua52: Lua 5.2 syntax (adds goto/labels, hex escapes)
+# - Lua53: Lua 5.3 syntax (adds bitwise operators, integer division)
+# - Lua54: Lua 5.4 syntax (adds attributes, const variables)
+# - LuaJIT: LuaJIT syntax extensions
+# - All: Accept all syntax features (recommended for Neovim)
+syntax = "All"
+
+# ----------------------------------------------------------------------------
+# Line Width and Wrapping
+# ----------------------------------------------------------------------------
+# Maximum line width before wrapping
+# Adjust this based on your screen width and preference
+# Common values: 80 (traditional), 100, 120, 160
+column_width = 120
+
+# ----------------------------------------------------------------------------
+# Line Endings
+# ----------------------------------------------------------------------------
+# Type of line endings to use
+# Options: Unix, Windows, Native
+# - Unix: LF (\n) - recommended for cross-platform projects
+# - Windows: CRLF (\r\n)
+# - Native: Uses OS default (LF on Unix/Mac, CRLF on Windows)
 line_endings = "Unix"
+
+# ----------------------------------------------------------------------------
+# Indentation
+# ----------------------------------------------------------------------------
+# Indentation style
+# Options: Tabs, Spaces
 indent_type = "Spaces"
-indent_width = 2
-quote_style = "AutoPreferSingle"
-call_parentheses = "None"
-collapse_simple_statement = "Always"
+
+# Number of spaces per indentation level (only used when indent_type = "Spaces")
+# Common values: 2, 4
+indent_width = 4
+
+# ----------------------------------------------------------------------------
+# String Quotes
+# ----------------------------------------------------------------------------
+# Preferred quote style for strings
+# Options: AutoPreferDouble, AutoPreferSingle, ForceDouble, ForceSingle
+# - AutoPreferDouble: Prefer "double", use 'single' to avoid escaping
+# - AutoPreferSingle: Prefer 'single', use "double" to avoid escaping
+# - ForceDouble: Always use "double" (may add escape sequences)
+# - ForceSingle: Always use 'single' (may add escape sequences)
+quote_style = "AutoPreferDouble"
+
+# ----------------------------------------------------------------------------
+# Function Call Parentheses
+# ----------------------------------------------------------------------------
+# Controls when parentheses are used in function calls
+# Options: Always, NoSingleString, NoSingleTable, None, Input
+# - Always: Always use parentheses → require('module'), print('hello')
+# - NoSingleString: Omit for single string → require 'module', print 'hello'
+# - NoSingleTable: Omit for single table → func { key = value }
+# - None: Omit for both single string and table
+# - Input: Preserve original formatting from input
+call_parentheses = "Always"
+
+# ----------------------------------------------------------------------------
+# Statement Collapsing
+# ----------------------------------------------------------------------------
+# Controls whether simple statements can be collapsed onto a single line
+# Options: Never, FunctionOnly, ConditionalOnly, Always
+# - Never: Never collapse (most readable)
+#   if condition then
+#     action()
+#   end
+# - FunctionOnly: Collapse simple functions only
+#   function foo() return bar end
+# - ConditionalOnly: Collapse simple conditionals only
+#   if condition then action() end
+# - Always: Collapse both functions and conditionals when simple
+collapse_simple_statement = "Never"
+
+# ----------------------------------------------------------------------------
+# Spacing After Function Names
+# ----------------------------------------------------------------------------
+# Controls spacing between function name and arguments
+# Options: Never, Definitions, Calls, Always
+# - Never: No space → function foo() / foo()
+# - Definitions: Space in definitions only → function foo () / foo()
+# - Calls: Space in calls only → function foo() / foo ()
+# - Always: Always add space → function foo () / foo ()
+# Recommended: "Never" (Lua standard style)
+space_after_function_names = "Never"
+
+# ----------------------------------------------------------------------------
+# Empty Line Management
+# ----------------------------------------------------------------------------
+# Controls how empty lines between statements in blocks are handled
+# Options: Never, Always, KeepInline
+# - Never: Remove all empty lines between statements in blocks
+# - Always: Keep original empty lines between statements
+# - KeepInline: Keep inline newlines but collapse at block edges
+# Default: "KeepInline" (preserves intentional spacing)
+# block_newline_gaps = "Never"
+
+# ----------------------------------------------------------------------------
+# Require Statement Sorting
+# ----------------------------------------------------------------------------
+# Automatically sort require statements at the top of files
+[sort_requires]
+enabled = true
+
+# ----------------------------------------------------------------------------
+# Additional Advanced Options (Uncomment to use)
+# ----------------------------------------------------------------------------
+
+# Override specific call parentheses behavior for certain functions
+# Useful when you want different styles for different function calls
+# [no_call_parentheses]
+# patterns = [
+#   "require",       # require 'module' even when call_parentheses = "Always"
+#   "^describe$",    # describe 'test' for testing frameworks
+#   "^it$",          # it 'should work'
+# ]
+
+# Space after function equals (for anonymous functions)
+# Options: None, Before, After, Both
+# Example: local f = function() vs local f= function() vs local f =function()
+# space_after_function_equals = "None"

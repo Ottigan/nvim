@@ -90,6 +90,10 @@ P.S. You can delete this when you're done too. It's your config now! :)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+-- Disable netrw (use Neo-tree instead)
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = false
 
@@ -102,7 +106,7 @@ vim.g.have_nerd_font = false
 vim.o.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.o.relativenumber = true
+vim.o.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.o.mouse = "a"
@@ -198,15 +202,26 @@ vim.diagnostic.config({
 
     -- Can switch between these as you prefer
     virtual_text = true, -- Text shows up at the end of the line
-    virtual_lines = false, -- Teest shows up underneath the line, with virtual lines
+    virtual_lines = false, -- Text shows up underneath the line, with virtual lines
 
-    -- Auto open the float, so you can easily read the errors when jumping with `[d` and `]d`
+    -- Auto open the float when jumping with `[d` and `]d`
     jump = { float = true },
 })
 
 vim.keymap.set("n", "<D-s>", "<cmd>w<CR>", { desc = "Save file" })
 vim.keymap.set("i", "<D-s>", "<cmd>w<CR>", { desc = "Save file" })
-vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
+
+-- Diagnostic keymaps
+vim.keymap.set("n", "<leader>xx", vim.diagnostic.setloclist, { desc = "Diagnostic Quickfi[x] List" })
+vim.keymap.set("n", "<leader>xe", vim.diagnostic.open_float, { desc = "Show Diagnostic [E]rror" })
+vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous [D]iagnostic" })
+vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Next [D]iagnostic" })
+vim.keymap.set("n", "[e", function()
+    vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })
+end, { desc = "Previous [E]rror" })
+vim.keymap.set("n", "]e", function()
+    vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
+end, { desc = "Next [E]rror" })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -317,23 +332,6 @@ require("lazy").setup({
     --            })
     --        end,
     --    }
-    --
-    -- Here is a more advanced example where we pass configuration
-    -- options to `gitsigns.nvim`.
-    --
-    -- See `:help gitsigns` to understand what the configuration keys do
-    { -- Adds git related signs to the gutter, as well as utilities for managing changes
-        "lewis6991/gitsigns.nvim",
-        opts = {
-            signs = {
-                add = { text = "+" },
-                change = { text = "~" },
-                delete = { text = "_" },
-                topdelete = { text = "‾" },
-                changedelete = { text = "~" },
-            },
-        },
-    },
 
     -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
     --
@@ -362,6 +360,9 @@ require("lazy").setup({
                 { "<leader>s", group = "[S]earch", mode = { "n", "v" } },
                 { "<leader>t", group = "[T]oggle" },
                 { "<leader>g", group = "[G]it hunk", mode = { "n", "v" } },
+                { "<leader>q", group = "[Q]uit/Session" },
+                { "<leader>b", group = "[B]uffer" },
+                { "<leader>x", group = "Diagnostic" },
             },
         },
     },

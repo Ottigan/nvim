@@ -7,3 +7,8 @@ spell/
 
 lazy-lock.json
 .DS_Store
+
+# Session files
+*.session
+.session/
+sessions/

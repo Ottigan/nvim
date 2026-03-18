@@ -198,6 +198,7 @@ vim.diagnostic.config({
 })
 
 vim.keymap.set("n", "<D-s>", "<cmd>w<CR>", { desc = "Save file" })
+vim.keymap.set("i", "<D-s>", "<cmd>w<CR>", { desc = "Save file" })
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
@@ -450,7 +451,14 @@ require("lazy").setup({
             end, { desc = "[S]earch [F]iles" })
             vim.keymap.set("n", "<leader>ss", builtin.builtin, { desc = "[S]earch [S]elect Telescope" })
             vim.keymap.set({ "n", "v" }, "<leader>sw", builtin.grep_string, { desc = "[S]earch current [W]ord" })
-            vim.keymap.set("n", "<leader>sg", builtin.live_grep, { desc = "[S]earch by [G]rep" })
+            vim.keymap.set("n", "<leader>sg", function()
+                local search_dir = vim.fn.input("Search directory: ", "", "dir")
+                if search_dir ~= "" then
+                    builtin.live_grep({ search_dirs = { search_dir } })
+                else -- If no directory is provided, fall back to searching the current working directory
+                    builtin.live_grep()
+                end
+            end, { desc = "[S]earch by [G]rep" })
             vim.keymap.set("n", "<leader>sd", builtin.diagnostics, { desc = "[S]earch [D]iagnostics" })
             vim.keymap.set("n", "<leader>sr", builtin.resume, { desc = "[S]earch [R]esume" })
             vim.keymap.set("n", "<leader>s.", builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
@@ -913,7 +921,7 @@ require("lazy").setup({
                 -- <c-k>: Toggle signature help
                 --
                 -- See :h blink-cmp-config-keymap for defining your own keymap
-                preset = "default",
+                preset = "super-tab",
 
                 -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
                 --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps

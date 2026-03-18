@@ -269,6 +269,14 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     end,
 })
 
+-- Detect .pcss files as CSS for LSP support
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+    pattern = "*.pcss",
+    callback = function()
+        vim.bo.filetype = "css"
+    end,
+})
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -353,7 +361,7 @@ require("lazy").setup({
             spec = {
                 { "<leader>s", group = "[S]earch", mode = { "n", "v" } },
                 { "<leader>t", group = "[T]oggle" },
-                { "<leader>h", group = "Git [H]unk", mode = { "n", "v" } },
+                { "<leader>g", group = "[G]it hunk", mode = { "n", "v" } },
             },
         },
     },
@@ -688,7 +696,7 @@ require("lazy").setup({
 
                         -- Helper to execute LSP code actions synchronously
                         local function execute_code_action(action_kind)
-                            local params = vim.lsp.util.make_range_params()
+                            local params = vim.lsp.util.make_range_params(nil, client.offset_encoding)
                             params.context = { only = { action_kind }, diagnostics = {} }
 
                             local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 3000)
@@ -720,7 +728,7 @@ require("lazy").setup({
                             vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
                         end
 
-                        vim.api.nvim_create_autocmd("BufWritePost", {
+                        vim.api.nvim_create_autocmd("BufWritePre", {
                             buffer = event.buf,
                             group = augroup,
                             callback = function()
@@ -729,29 +737,27 @@ require("lazy").setup({
                                 end
                                 vim.b.ts_import_in_progress = true
 
-                                vim.schedule(function()
-                                    local bufnr = vim.api.nvim_get_current_buf()
+                                local bufnr = vim.api.nvim_get_current_buf()
 
-                                    -- Capture line count before adding imports
-                                    local line_count_before = vim.api.nvim_buf_line_count(bufnr)
+                                -- Capture line count before adding imports
+                                local line_count_before = vim.api.nvim_buf_line_count(bufnr)
 
-                                    -- Execute import operations in sequence
-                                    execute_code_action("source.addMissingImports.ts")
+                                -- Execute import operations in sequence
+                                execute_code_action("source.addMissingImports.ts")
 
-                                    -- Only strip import type if new imports were added
-                                    local line_count_after = vim.api.nvim_buf_line_count(bufnr)
-                                    if line_count_after > line_count_before then
-                                        strip_import_type() -- Handle verbatimModuleSyntax: true
-                                    end
+                                -- Only strip import type if new imports were added
+                                local line_count_after = vim.api.nvim_buf_line_count(bufnr)
+                                if line_count_after > line_count_before then
+                                    strip_import_type() -- Handle verbatimModuleSyntax: true
+                                end
 
-                                    execute_code_action("source.removeUnusedImports.ts")
-                                    execute_code_action("source.organizeImports")
+                                execute_code_action("source.removeUnusedImports.ts")
+                                execute_code_action("source.organizeImports")
 
-                                    -- Format with ESLint/Prettier
-                                    require("conform").format({ bufnr = bufnr, timeout_ms = 500, lsp_fallback = true })
+                                -- Format with ESLint/Prettier
+                                require("conform").format({ bufnr = bufnr, timeout_ms = 500, lsp_fallback = true })
 
-                                    vim.b.ts_import_in_progress = false
-                                end)
+                                vim.b.ts_import_in_progress = false
                             end,
                         })
                     end
@@ -774,6 +780,7 @@ require("lazy").setup({
                 },
                 lua_ls = {},
                 eslint = {},
+                cssls = {}, -- CSS/SCSS/SASS/LESS Language Server
             }
 
             require("mason-lspconfig").setup({
@@ -835,57 +842,6 @@ require("lazy").setup({
             })
             vim.lsp.enable("lua_ls")
         end,
-    },
-
-    { -- Autoformat
-        "stevearc/conform.nvim",
-        event = { "BufWritePre" },
-        cmd = { "ConformInfo" },
-        keys = {
-            {
-                "<leader>f",
-                function()
-                    require("conform").format({ async = true, lsp_format = "fallback" })
-                end,
-                mode = "",
-                desc = "[F]ormat buffer",
-            },
-        },
-        opts = {
-            notify_on_error = false,
-            format_on_save = function(bufnr)
-                -- Disable "format_on_save lsp_fallback" for languages that don't
-                -- have a well standardized coding style. You can add additional
-                -- languages here or re-enable it for the disabled ones.
-                local disable_filetypes = { c = true, cpp = true }
-
-                -- Disable for TypeScript/JavaScript - handled manually in ts_ls autocmd
-                local ts_filetypes = {
-                    typescript = true,
-                    javascript = true,
-                    typescriptreact = true,
-                    javascriptreact = true,
-                }
-
-                if disable_filetypes[vim.bo[bufnr].filetype] or ts_filetypes[vim.bo[bufnr].filetype] then
-                    return nil
-                else
-                    return {
-                        timeout_ms = 500,
-                        lsp_format = "fallback",
-                    }
-                end
-            end,
-            formatters_by_ft = {
-                lua = { "stylua" },
-                javascript = { "eslint_d", "eslint", stop_after_first = true },
-                typescript = { "eslint_d", "eslint", stop_after_first = true },
-                javascriptreact = { "eslint_d", "eslint", stop_after_first = true },
-                typescriptreact = { "eslint_d", "eslint", stop_after_first = true },
-                -- Conform can also run multiple formatters sequentially
-                -- python = { "isort", "black" },
-            },
-        },
     },
 
     { -- Autocompletion
@@ -1085,31 +1041,8 @@ require("lazy").setup({
         },
     },
 
-    -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
-    -- init.lua. If you want these files, they are in the repository, so you can just download them and
-    -- place them in the correct locations.
-
-    -- NOTE: Next step on your Neovim journey: Add/Configure additional plugins for Kickstart
-    --
-    --  Here are some example plugins that I've included in the Kickstart repository.
-    --  Uncomment any of the lines below to enable them (you will need to restart nvim).
-    --
-    -- require('kickstart.plugins.debug'),
-    -- require('kickstart.plugins.lint'),
-    -- require('kickstart.plugins.autopairs'),
-    require("kickstart.plugins.neo-tree"),
-    require("kickstart.plugins.gitsigns"),
-
-    -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
-    --    This is the easiest way to modularize your config.
-    --
-    --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-    { import = "custom.plugins" },
-    --
-    -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
-    -- Or use telescope!
-    -- In normal mode type `<space>sh` then write `lazy.nvim-plugin`
-    -- you can continue same window with `<space>sr` which resumes last telescope search
+    -- Include Plugins
+    { import = "plugins" },
 }, {
     ui = {
         -- If you are using a Nerd Font: set icons to an empty table which will use the

@@ -166,6 +166,13 @@ vim.o.scrolloff = 10
 -- See `:help 'confirm'`
 vim.o.confirm = true
 
+-- Indentation settings
+vim.o.tabstop = 2 -- Number of spaces a <Tab> counts for
+vim.o.shiftwidth = 2 -- Number of spaces for each indentation level
+vim.o.expandtab = true -- Use spaces instead of tabs
+vim.o.softtabstop = 2 -- Number of spaces for <Tab> in insert mode
+vim.o.smartindent = true -- Smart autoindenting on new lines
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -237,6 +244,16 @@ vim.keymap.set("n", "<leader>bD", "<cmd>bdelete!<CR>", { desc = "[B]uffer [D]ele
 vim.keymap.set("n", "<leader>bn", "<cmd>bnext<CR>", { desc = "[B]uffer [N]ext" })
 vim.keymap.set("n", "<leader>bp", "<cmd>bprevious<CR>", { desc = "[B]uffer [P]revious" })
 vim.keymap.set("n", "<leader>bx", "<cmd>%bdelete|edit#|bdelete#<CR>", { desc = "[B]uffer delete all e[X]cept current" })
+
+-- Move lines up/down
+vim.keymap.set("n", "J", "<cmd>m .+1<CR>==", { desc = "Move line down" })
+vim.keymap.set("n", "K", "<cmd>m .-2<CR>==", { desc = "Move line up" })
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move lines down" })
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move lines up" })
+
+-- Better indenting - stay in visual mode
+vim.keymap.set("v", "<", "<gv", { desc = "Indent left" })
+vim.keymap.set("v", ">", ">gv", { desc = "Indent right" })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -861,12 +878,12 @@ require("lazy").setup({
             end,
             formatters_by_ft = {
                 lua = { "stylua" },
+                javascript = { "eslint_d", "eslint", stop_after_first = true },
+                typescript = { "eslint_d", "eslint", stop_after_first = true },
+                javascriptreact = { "eslint_d", "eslint", stop_after_first = true },
+                typescriptreact = { "eslint_d", "eslint", stop_after_first = true },
                 -- Conform can also run multiple formatters sequentially
                 -- python = { "isort", "black" },
-                --
-                -- You can use 'stop_after_first' to run the first available formatter from the list
-                -- javascript = { 'prettierd', 'prettier', stop_after_first = true },
-                -- typescript = { 'prettierd', 'prettier', stop_after_first = true },
             },
         },
     },

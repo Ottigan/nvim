@@ -3,19 +3,15 @@
 
 return {
     "folke/persistence.nvim",
-    event = "BufReadPre",
+    event = "VimEnter", -- Fires for both files and directories
     opts = {
         dir = vim.fn.stdpath("state") .. "/sessions/",
-        need = 1,
-        branch = false,
-        options = { "buffers", "curdir", "tabpages", "winsize" },
-        pre_save = function()
-            -- Close neo-tree before saving session
-            vim.cmd("Neotree close")
-        end,
     },
-    config = function(_, opts)
-        require("persistence").setup(opts)
+    config = function()
+        require("persistence").setup()
+        vim.schedule(function()
+            require("persistence").load()
+        end)
     end,
     keys = {
         {

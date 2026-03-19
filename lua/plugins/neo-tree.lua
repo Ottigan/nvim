@@ -3,13 +3,13 @@
 
 return {
     "nvim-neo-tree/neo-tree.nvim",
-    version = "*",
+    branch = "v3.x",
     dependencies = {
         "nvim-lua/plenary.nvim",
-        "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
         "MunifTanjim/nui.nvim",
+        "nvim-tree/nvim-web-devicons", -- optional, but recommended
     },
-    lazy = false,
+    lazy = false, -- neo-tree will lazily load itself
     keys = {
         { "\\", ":Neotree reveal<CR>", desc = "NeoTree reveal", silent = true },
     },
@@ -17,22 +17,10 @@ return {
         close_if_last_window = false,
         filesystem = {
             window = {
-                position = "left",
-                width = 50, -- Default width
-                mappings = {
-                    ["\\"] = "close_window",
-                },
+                position = "float",
             },
             follow_current_file = {
                 enabled = true,
-            },
-        },
-        event_handlers = {
-            {
-                event = "file_opened",
-                handler = function()
-                    require("neo-tree.command").execute({ action = "close" })
-                end,
             },
         },
     },

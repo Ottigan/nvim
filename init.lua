@@ -813,10 +813,7 @@ require("lazy").setup({
             }
 
             require("mason-lspconfig").setup({
-                event = { "BufReadPre", "BufNewFile" },
-                opts = {
-                    ensure_installed = vim.tbl_keys(servers or {}),
-                },
+                ensure_installed = vim.tbl_keys(servers or {}),
             })
 
             for name, server in pairs(servers) do

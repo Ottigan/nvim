@@ -223,14 +223,44 @@ vim.keymap.set("n", "]e", function()
     vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
 end, { desc = "Next [E]rror" })
 
--- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
--- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
--- is not what someone will guess without a bit more experience.
---
--- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
--- or just use <C-\><C-n> to exit terminal mode
+-- [[ Terminal Workflow ]]
+
+-- Toggle a bottom terminal split
+local _term_buf = nil
+local function toggle_terminal()
+    -- If the terminal buffer is visible in a window, close that window
+    if _term_buf and vim.api.nvim_buf_is_valid(_term_buf) then
+        for _, win in ipairs(vim.api.nvim_list_wins()) do
+            if vim.api.nvim_win_get_buf(win) == _term_buf then
+                vim.api.nvim_win_close(win, false)
+                return
+            end
+        end
+        -- Buffer exists but not visible — show it in a bottom split
+        vim.cmd("botright 15split")
+        vim.api.nvim_win_set_buf(0, _term_buf)
+        vim.cmd("startinsert")
+        return
+    end
+    -- No terminal buffer yet — create one
+    vim.cmd("botright 15split | terminal")
+    _term_buf = vim.api.nvim_get_current_buf()
+end
+
+vim.keymap.set("n", "<leader>tt", toggle_terminal, { desc = "[T]oggle [T]erminal" })
+vim.keymap.set("t", "<leader>tt", function()
+    vim.cmd("stopinsert")
+    toggle_terminal()
+end, { desc = "[T]oggle [T]erminal" })
+
+-- Exit terminal mode with double Esc
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
-vim.keymap.set("n", "<leader>t", ":terminal<CR>", { desc = "Open terminal mode" })
+
+-- Navigate out of terminal with Ctrl+hjkl
+vim.keymap.set("t", "<C-h>", "<C-\\><C-n><C-w>h", { desc = "Move to left window" })
+vim.keymap.set("t", "<C-j>", "<C-\\><C-n><C-w>j", { desc = "Move to lower window" })
+vim.keymap.set("t", "<C-k>", "<C-\\><C-n><C-w>k", { desc = "Move to upper window" })
+vim.keymap.set("t", "<C-l>", "<C-\\><C-n><C-w>l", { desc = "Move to right window" })
 
 -- TIP: Disable arrow keys in normal mode
 vim.keymap.set("n", "<left>", '<cmd>echo "Use h to move!!"<CR>')
@@ -281,6 +311,13 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     group = vim.api.nvim_create_augroup("kickstart-highlight-yank", { clear = true }),
     callback = function()
         vim.hl.on_yank()
+    end,
+})
+
+-- Auto-enter insert mode when entering a terminal buffer
+vim.api.nvim_create_autocmd("TermOpen", {
+    callback = function()
+        vim.cmd("startinsert")
     end,
 })
 
@@ -358,10 +395,11 @@ require("lazy").setup({
             -- Document existing key chains
             spec = {
                 { "<leader>s", group = "[S]earch", mode = { "n", "v" } },
-                { "<leader>t", group = "[T]oggle" },
-                { "<leader>g", group = "[G]it hunk", mode = { "n", "v" } },
+                { "<leader>h", group = "Git [H]unk", mode = { "n", "v" } },
+                { "<leader>g", group = "[G]it Actions", mode = { "n", "v" } },
                 { "<leader>q", group = "[Q]uit/Session" },
                 { "<leader>b", group = "[B]uffer" },
+                { "<leader>t", group = "[T]est" },
                 { "<leader>x", group = "Diagnostic" },
             },
         },
@@ -677,16 +715,6 @@ require("lazy").setup({
                                 vim.api.nvim_clear_autocmds({ group = "kickstart-lsp-highlight", buffer = event2.buf })
                             end,
                         })
-                    end
-
-                    -- The following code creates a keymap to toggle inlay hints in your
-                    -- code, if the language server you are using supports them
-                    --
-                    -- This may be unwanted, since they displace some of your code
-                    if client and client:supports_method("textDocument/inlayHint", event.buf) then
-                        map("<leader>th", function()
-                            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }))
-                        end, "[T]oggle Inlay [H]ints")
                     end
 
                     -- Auto-add missing imports for TypeScript/JavaScript on save

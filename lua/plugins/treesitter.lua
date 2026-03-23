@@ -9,6 +9,12 @@ return {
                 "typescript",
                 "tsx",
             },
+            -- Enable syntax highlighting
+            highlight = {
+                enable = true,
+                -- Optional: disable highlighting for some languages
+                -- disable = { "latex" },
+            },
         })
     end,
 }

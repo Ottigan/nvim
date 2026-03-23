@@ -7,6 +7,46 @@ return {
         "nvim-treesitter/nvim-treesitter",
         "nvim-neotest/neotest-jest",
     },
+    config = function()
+        require("neotest").setup({
+            adapters = {
+                require("neotest-jest")({
+                    jestCommand = "yarn jest",
+                    jest_test_discovery = true, -- Discover it.each
+                    jestConfigFile = function(file)
+                        local root = vim.fn.getcwd()
+                        local dir = vim.fn.fnamemodify(file, ":h")
+
+                        while #dir >= #root do
+                            for _, name in ipairs({
+                                "jest.config.ts",
+                                "jest.config.js",
+                                "jest.config.cjs",
+                                "jest.config.mjs",
+                            }) do
+                                local candidate = dir .. "/" .. name
+                                if vim.fn.filereadable(candidate) == 1 then
+                                    return candidate
+                                end
+                            end
+                            dir = vim.fn.fnamemodify(dir, ":h")
+                        end
+
+                        return root .. "/jest.config.ts"
+                    end,
+                    cwd = function()
+                        return vim.fn.getcwd()
+                    end,
+                }),
+            },
+            -- Show test status in the sign column
+            status = { virtual_text = true },
+            -- Nicer output
+            output = { open_on_run = true },
+            -- Disable test discovery, as it can be slow in large projects --
+            discovery = { enabled = false },
+        })
+    end,
     keys = {
         {
             "<leader>tn",
@@ -65,43 +105,4 @@ return {
             desc = "[T]est [D]ebug nearest",
         },
     },
-    config = function()
-        require("neotest").setup({
-            adapters = {
-                require("neotest-jest")({
-                    jestCommand = "yarn jest",
-                    jestConfigFile = function(file)
-                        local root = vim.fn.getcwd()
-                        local dir = vim.fn.fnamemodify(file, ":h")
-
-                        while #dir >= #root do
-                            for _, name in ipairs({
-                                "jest.config.ts",
-                                "jest.config.js",
-                                "jest.config.cjs",
-                                "jest.config.mjs",
-                            }) do
-                                local candidate = dir .. "/" .. name
-                                if vim.fn.filereadable(candidate) == 1 then
-                                    return candidate
-                                end
-                            end
-                            dir = vim.fn.fnamemodify(dir, ":h")
-                        end
-
-                        return root .. "/jest.config.ts"
-                    end,
-                    cwd = function()
-                        return vim.fn.getcwd()
-                    end,
-                }),
-            },
-            -- Show test status in the sign column
-            status = { virtual_text = true },
-            -- Nicer output
-            output = { open_on_run = true },
-            -- Disable test discovery, as it can be slow in large projects --
-            discovery = { enabled = false },
-        })
-    end,
 }

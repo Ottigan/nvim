@@ -43,6 +43,8 @@ return {
             typescript = { "eslint_d", "eslint", stop_after_first = true },
             javascriptreact = { "eslint_d", "eslint", stop_after_first = true },
             typescriptreact = { "eslint_d", "eslint", stop_after_first = true },
+            scss = { "stylelint" },
+
             -- Conform can also run multiple formatters sequentially
             -- python = { "isort", "black" },
         },

@@ -155,7 +155,52 @@ return {
             vim.fn.sign_define(tp, { text = icon, texthl = hl, numhl = hl })
         end
 
-        dap.listeners.after.event_initialized["dapui_config"] = dapui.open
+        dap.listeners.after.event_initialized["dapui_config"] = function()
+            vim.g.dap_suppress_close = false
+            dapui.open()
+        end
+
+        -- on_session fires exactly once when a session truly ends (via Session:close()),
+        -- unlike event_terminated which fires for intermediate subprocess events and
+        -- always fires before any restart on_done callback makes a new session visible.
+        -- When vim.g.dap_suppress_close is set (by run_last / debug-nearest keymaps),
+        -- the close is skipped so the existing layout stays up through the restart.
+        dap.listeners.on_session["dapui_config"] = function(old_session, new_session)
+            if old_session ~= nil and new_session == nil and not vim.g.dap_suppress_close then
+                dapui.close()
+            end
+        end
+
+        -- nvim-dap recycles terminal buffers via an internal pool. When a session ends
+        -- the buffer (with its old content) goes back into the pool; the next launch
+        -- tries to call termopen() on it and fails with "requires unmodified buffer".
+        --
+        -- on_config fires after the old session has terminated (and its terminal job has
+        -- exited, releasing the buffer back to the pool) but before the new session
+        -- connects and sends runInTerminal. Deleting stale dap terminal buffers here
+        -- forces nvim-dap to allocate a fresh buffer instead of reusing a dirty one.
+        dap.listeners.on_config["cleanup_dap_terminals"] = function(config)
+            local stale_bufs = {}
+
+            for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+                if vim.api.nvim_buf_is_valid(bufnr) and vim.b[bufnr]["dap-type"] ~= nil then
+                    table.insert(stale_bufs, bufnr)
+                end
+            end
+
+            if #stale_bufs > 0 then
+                -- Close dapui first so its layout releases window references cleanly.
+                -- Without this, deleting the terminal buffer closes its window and leaves
+                -- dapui holding stale window IDs, causing "Invalid window id" errors when
+                -- it tries to resize on the next event_initialized.
+                pcall(dapui.close)
+                for _, bufnr in ipairs(stale_bufs) do
+                    pcall(vim.api.nvim_buf_delete, bufnr, { force = true })
+                end
+            end
+
+            return config
+        end
 
         -- ── Go ────────────────────────────────────────────────────────────────
         require("dap-go").setup({

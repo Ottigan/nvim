@@ -9,8 +9,8 @@ return {
         need = 1,
         branch = false,
     },
-    config = function()
-        require("persistence").setup()
+    config = function(_, opts)
+        require("persistence").setup(opts)
 
         vim.schedule(function()
             -- Check if we're opening a directory or have no arguments

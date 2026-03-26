@@ -22,16 +22,6 @@ return {
         { "nvim-tree/nvim-web-devicons", enabled = vim.g.have_nerd_font },
     },
     config = function()
-        -- Clone the default Telescope configuration
-        local telescopeConfig = require("telescope.config")
-        local vimgrep_arguments = { unpack(telescopeConfig.values.vimgrep_arguments) }
-
-        -- I want to search in hidden/dot files.
-        table.insert(vimgrep_arguments, "--hidden")
-        -- I don't want to search in the `.git` directory.
-        table.insert(vimgrep_arguments, "--glob")
-        table.insert(vimgrep_arguments, "!**/.git/*")
-
         -- [[ Configure Telescope ]]
         -- See `:help telescope` and `:help telescope.setup()`
         require("telescope").setup({

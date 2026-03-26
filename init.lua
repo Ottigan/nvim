@@ -135,8 +135,8 @@ local function toggle_terminal()
     _term_buf = vim.api.nvim_get_current_buf()
 end
 
-vim.keymap.set("n", "<leader>tt", toggle_terminal, { desc = "[T]oggle [T]erminal" })
-vim.keymap.set("t", "<leader>tt", function()
+vim.keymap.set("n", "<leader>§", toggle_terminal, { desc = "[T]oggle [T]erminal" })
+vim.keymap.set("t", "<leader>§", function()
     vim.cmd("stopinsert")
     toggle_terminal()
 end, { desc = "[T]oggle [T]erminal" })
@@ -179,10 +179,10 @@ vim.keymap.set("n", "<leader>bp", "<cmd>bprevious<CR>", { desc = "[B]uffer [P]re
 vim.keymap.set("n", "<leader>bx", "<cmd>%bdelete|edit#|bdelete#<CR>", { desc = "[B]uffer delete all e[X]cept current" })
 
 -- Move lines up/down
-vim.keymap.set("n", "J", "<cmd>m .+1<CR>==", { desc = "Move line down" })
-vim.keymap.set("n", "K", "<cmd>m .-2<CR>==", { desc = "Move line up" })
-vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move lines down" })
-vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move lines up" })
+vim.keymap.set("n", "<A-j>", "<cmd>m .+1<CR>==", { desc = "Move line down" })
+vim.keymap.set("n", "<A-k>", "<cmd>m .-2<CR>==", { desc = "Move line up" })
+vim.keymap.set("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = "Move lines down" })
+vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move lines up" })
 
 -- Better indenting - stay in visual mode
 vim.keymap.set("v", "<", "<gv", { desc = "Indent left" })
@@ -196,7 +196,7 @@ vim.keymap.set("v", ">", ">gv", { desc = "Indent right" })
 --  see `:help vim.hl.on_yank()`
 vim.api.nvim_create_autocmd("TextYankPost", {
     desc = "Highlight when yanking (copying) text",
-    group = vim.api.nvim_create_augroup("kickstart-highlight-yank", { clear = true }),
+    group = vim.api.nvim_create_augroup("user-highlight-yank", { clear = true }),
     callback = function()
         vim.hl.on_yank()
     end,
@@ -279,6 +279,7 @@ require("lazy").setup({
                 { "<leader>g", group = "[G]it Actions", mode = { "n", "v" } },
                 { "<leader>q", group = "[Q]uit/Session" },
                 { "<leader>b", group = "[B]uffer" },
+                { "<leader>d", group = "[D]ebug" },
                 { "<leader>t", group = "[T]est" },
                 { "<leader>x", group = "Diagnostic" },
             },
@@ -362,11 +363,7 @@ require("lazy").setup({
             completion = {
                 -- By default, you may press `<c-space>` to show the documentation.
                 -- Optionally, set `auto_show = true` to show the documentation after a delay.
-                documentation = { auto_show = false, auto_show_delay_ms = 500 },
-            },
-
-            sources = {
-                default = { "lsp", "path", "snippets" },
+                documentation = { auto_show = true, auto_show_delay_ms = 500 },
             },
 
             snippets = { preset = "luasnip" },

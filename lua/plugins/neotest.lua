@@ -3,7 +3,6 @@ return {
     dependencies = {
         "nvim-neotest/nvim-nio",
         "nvim-lua/plenary.nvim",
-        "antoinemadec/FixCursorHold.nvim",
         "nvim-treesitter/nvim-treesitter",
         "nvim-neotest/neotest-jest",
     },
@@ -11,7 +10,15 @@ return {
         require("neotest").setup({
             adapters = {
                 require("neotest-jest")({
-                    jestCommand = "yarn jest",
+                    jestCommand = function()
+                        if vim.fn.filereadable("pnpm-lock.yaml") == 1 then
+                            return "pnpm jest"
+                        elseif vim.fn.filereadable("yarn.lock") == 1 then
+                            return "yarn jest"
+                        else
+                            return "npx jest"
+                        end
+                    end,
                     jest_test_discovery = true, -- Discover it.each
                     jestConfigFile = function(file)
                         local root = vim.fn.getcwd()
@@ -93,7 +100,16 @@ return {
         {
             "<leader>tw",
             function()
-                require("neotest").run.run({ jestCommand = "npx jest --watch" })
+                -- Respect the same package manager as jestCommand
+                local cmd
+                if vim.fn.filereadable("pnpm-lock.yaml") == 1 then
+                    cmd = "pnpm jest --watch"
+                elseif vim.fn.filereadable("yarn.lock") == 1 then
+                    cmd = "yarn jest --watch"
+                else
+                    cmd = "npx jest --watch"
+                end
+                require("neotest").run.run({ jestCommand = cmd })
             end,
             desc = "[T]est [W]atch",
         },

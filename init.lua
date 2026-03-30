@@ -8,7 +8,7 @@ vim.g.maplocalleader = " "
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
--- Set to true if you have a Nerd Font installed and selected in the terminal
+-- Set to true if you have a Nerd Font installed
 vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
@@ -111,44 +111,9 @@ vim.keymap.set("n", "<C-s>", "<cmd>w<CR>", { desc = "Save file" })
 vim.keymap.set("i", "<D-s>", "<cmd>w<CR>", { desc = "Save file" })
 vim.keymap.set("i", "<C-s>", "<cmd>w<CR>", { desc = "Save file" })
 
--- [[ Terminal Workflow ]]
-
--- Toggle a bottom terminal split
-local _term_buf = nil
-local function toggle_terminal()
-    -- If the terminal buffer is visible in a window, close that window
-    if _term_buf and vim.api.nvim_buf_is_valid(_term_buf) then
-        for _, win in ipairs(vim.api.nvim_list_wins()) do
-            if vim.api.nvim_win_get_buf(win) == _term_buf then
-                vim.api.nvim_win_close(win, false)
-                return
-            end
-        end
-        -- Buffer exists but not visible — show it in a bottom split
-        vim.cmd("botright 15split")
-        vim.api.nvim_win_set_buf(0, _term_buf)
-        vim.cmd("startinsert")
-        return
-    end
-    -- No terminal buffer yet — create one
-    vim.cmd("botright 15split | terminal")
-    _term_buf = vim.api.nvim_get_current_buf()
-end
-
-vim.keymap.set("n", "<leader>§", toggle_terminal, { desc = "[T]oggle [T]erminal" })
-vim.keymap.set("t", "<leader>§", function()
-    vim.cmd("stopinsert")
-    toggle_terminal()
-end, { desc = "[T]oggle [T]erminal" })
-
--- Exit terminal mode with double Esc
-vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
-
--- Navigate out of terminal with Ctrl+hjkl
-vim.keymap.set("t", "<C-h>", "<C-\\><C-n><C-w>h", { desc = "Move to left window" })
-vim.keymap.set("t", "<C-j>", "<C-\\><C-n><C-w>j", { desc = "Move to lower window" })
-vim.keymap.set("t", "<C-k>", "<C-\\><C-n><C-w>k", { desc = "Move to upper window" })
-vim.keymap.set("t", "<C-l>", "<C-\\><C-n><C-w>l", { desc = "Move to right window" })
+vim.keymap.set("n", "<leader>cp", function()
+    vim.fn.setreg("+", vim.fn.expand("%"))
+end, { desc = "Copy relative path" })
 
 -- TIP: Disable arrow keys in normal mode
 vim.keymap.set("n", "<left>", '<cmd>echo "Use h to move!!"<CR>')
@@ -164,12 +129,6 @@ vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left wind
 vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right window" })
 vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
 vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
-
--- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
--- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
--- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
--- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
--- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
 
 -- Buffer management keymaps
 vim.keymap.set("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "[B]uffer [D]elete" })
@@ -199,13 +158,6 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     group = vim.api.nvim_create_augroup("user-highlight-yank", { clear = true }),
     callback = function()
         vim.hl.on_yank()
-    end,
-})
-
--- Auto-enter insert mode when entering a terminal buffer
-vim.api.nvim_create_autocmd("TermOpen", {
-    callback = function()
-        vim.cmd("startinsert")
     end,
 })
 

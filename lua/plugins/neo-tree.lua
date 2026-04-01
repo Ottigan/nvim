@@ -18,6 +18,16 @@ return {
         popup_border_style = "", -- or "" to use 'winborder' on Neovim v0.11+
         window = {
             position = "float",
+            mappings = {
+                ["P"] = {
+                    "toggle_preview",
+                    config = {
+                        use_float = true,
+                        use_snacks_image = true,
+                        title = "Neo-tree Preview",
+                    },
+                },
+            },
         },
         event_handlers = {
             {

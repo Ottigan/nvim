@@ -7,7 +7,7 @@ return {
     opts = {
         dir = vim.fn.stdpath("state") .. "/sessions/",
         need = 1,
-        branch = false,
+        branch = true,
     },
     config = function(_, opts)
         require("persistence").setup(opts)

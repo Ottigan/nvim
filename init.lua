@@ -29,12 +29,7 @@ vim.o.mouse = "a"
 vim.o.showmode = false
 
 -- Sync clipboard between OS and Neovim.
---  Schedule the setting after `UiEnter` because it can increase startup-time.
---  Remove this option if you want your OS clipboard to remain independent.
---  See `:help 'clipboard'`
-vim.schedule(function()
-    vim.o.clipboard = "unnamedplus"
-end)
+vim.opt.clipboard = "unnamedplus"
 
 -- Enable break indent
 vim.o.breakindent = true
@@ -85,10 +80,10 @@ vim.o.scrolloff = 10
 vim.o.confirm = true
 
 -- Indentation settings
-vim.o.tabstop = 2 -- Number of spaces a <Tab> counts for
-vim.o.shiftwidth = 2 -- Number of spaces for each indentation level
-vim.o.expandtab = true -- Use spaces instead of tabs
-vim.o.softtabstop = 2 -- Number of spaces for <Tab> in insert mode
+vim.o.tabstop = 2        -- Number of spaces a <Tab> counts for
+vim.o.shiftwidth = 2     -- Number of spaces for each indentation level
+vim.o.expandtab = true   -- Use spaces instead of tabs
+vim.o.softtabstop = 2    -- Number of spaces for <Tab> in insert mode
 vim.o.smartindent = true -- Smart autoindenting on new lines
 
 -- [[ Basic Keymaps ]]
@@ -97,13 +92,13 @@ vim.o.smartindent = true -- Smart autoindenting on new lines
 -- Clear highlights on search and close floating windows when pressing <Esc> in normal mode
 --  See `:help hlsearch`
 vim.keymap.set("n", "<Esc>", function()
-    vim.cmd("nohlsearch")
-    -- Close all floating windows
-    for _, win in ipairs(vim.api.nvim_list_wins()) do
-        if vim.api.nvim_win_get_config(win).relative ~= "" then
-            vim.api.nvim_win_close(win, false)
-        end
+  vim.cmd("nohlsearch")
+  -- Close all floating windows
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    if vim.api.nvim_win_get_config(win).relative ~= "" then
+      vim.api.nvim_win_close(win, false)
     end
+  end
 end)
 
 vim.keymap.set("n", "<D-s>", "<cmd>w<CR>", { desc = "Save file" })
@@ -112,7 +107,7 @@ vim.keymap.set("i", "<D-s>", "<cmd>w<CR>", { desc = "Save file" })
 vim.keymap.set("i", "<C-s>", "<cmd>w<CR>", { desc = "Save file" })
 
 vim.keymap.set("n", "<leader>cp", function()
-    vim.fn.setreg("+", vim.fn.expand("%"))
+  vim.fn.setreg("+", vim.fn.expand("%"))
 end, { desc = "Copy relative path" })
 
 -- TIP: Disable arrow keys in normal mode
@@ -154,22 +149,22 @@ vim.keymap.set("v", ">", ">gv", { desc = "Indent right" })
 --  try it with `yap` in normal mode
 --  see `:help vim.hl.on_yank()`
 vim.api.nvim_create_autocmd("TextYankPost", {
-    desc = "Highlight when yanking (copying) text",
-    group = vim.api.nvim_create_augroup("user-highlight-yank", { clear = true }),
-    callback = function()
-        vim.hl.on_yank()
-    end,
+  desc = "Highlight when yanking (copying) text",
+  group = vim.api.nvim_create_augroup("user-highlight-yank", { clear = true }),
+  callback = function()
+    vim.hl.on_yank()
+  end,
 })
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
-    local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-    local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
-    if vim.v.shell_error ~= 0 then
-        error("Error cloning lazy.nvim:\n" .. out)
-    end
+  local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+  if vim.v.shell_error ~= 0 then
+    error("Error cloning lazy.nvim:\n" .. out)
+  end
 end
 
 ---@type vim.Option
@@ -188,219 +183,219 @@ rtp:prepend(lazypath)
 --
 -- NOTE: Here is where you install your plugins.
 require("lazy").setup({
-    -- NOTE: Plugins can be added via a link or github org/name. To run setup automatically, use `opts = {}`
-    { "NMAC427/guess-indent.nvim", opts = {} },
+  -- NOTE: Plugins can be added via a link or github org/name. To run setup automatically, use `opts = {}`
+  { "NMAC427/guess-indent.nvim", opts = {} },
 
-    -- Alternatively, use `config = function() ... end` for full control over the configuration.
-    -- If you prefer to call `setup` explicitly, use:
-    --    {
-    --        'lewis6991/gitsigns.nvim',
-    --        config = function()
-    --            require('gitsigns').setup({
-    --                -- Your gitsigns configuration here
-    --            })
-    --        end,
-    --    }
+  -- Alternatively, use `config = function() ... end` for full control over the configuration.
+  -- If you prefer to call `setup` explicitly, use:
+  --    {
+  --        'lewis6991/gitsigns.nvim',
+  --        config = function()
+  --            require('gitsigns').setup({
+  --                -- Your gitsigns configuration here
+  --            })
+  --        end,
+  --    }
 
-    -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
-    --
-    -- This is often very useful to both group configuration, as well as handle
-    -- lazy loading plugins that don't need to be loaded immediately at startup.
-    --
-    -- For example, in the following configuration, we use:
-    --  event = 'VimEnter'
-    --
-    -- which loads which-key before all the UI elements are loaded. Events can be
-    -- normal autocommands events (`:help autocmd-events`).
-    --
-    -- Then, because we use the `opts` key (recommended), the configuration runs
-    -- after the plugin has been loaded as `require(MODULE).setup(opts)`.
+  -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
+  --
+  -- This is often very useful to both group configuration, as well as handle
+  -- lazy loading plugins that don't need to be loaded immediately at startup.
+  --
+  -- For example, in the following configuration, we use:
+  --  event = 'VimEnter'
+  --
+  -- which loads which-key before all the UI elements are loaded. Events can be
+  -- normal autocommands events (`:help autocmd-events`).
+  --
+  -- Then, because we use the `opts` key (recommended), the configuration runs
+  -- after the plugin has been loaded as `require(MODULE).setup(opts)`.
 
-    { -- Useful plugin to show you pending keybinds.
-        "folke/which-key.nvim",
-        event = "VimEnter",
-        opts = {
-            -- delay between pressing a key and opening which-key (milliseconds)
-            delay = 0,
-            icons = { mappings = vim.g.have_nerd_font },
+  { -- Useful plugin to show you pending keybinds.
+    "folke/which-key.nvim",
+    event = "VimEnter",
+    opts = {
+      -- delay between pressing a key and opening which-key (milliseconds)
+      delay = 0,
+      icons = { mappings = vim.g.have_nerd_font },
 
-            -- Document existing key chains
-            spec = {
-                { "<leader>s", group = "[S]earch", mode = { "n", "v" } },
-                { "<leader>h", group = "Git [H]unk", mode = { "n", "v" } },
-                { "<leader>g", group = "[G]it Actions", mode = { "n", "v" } },
-                { "<leader>q", group = "[Q]uit/Session" },
-                { "<leader>b", group = "[B]uffer" },
-                { "<leader>d", group = "[D]ebug" },
-                { "<leader>t", group = "[T]est" },
-                { "<leader>x", group = "Diagnostic" },
-            },
-        },
+      -- Document existing key chains
+      spec = {
+        { "<leader>s", group = "[S]earch",      mode = { "n", "v" } },
+        { "<leader>h", group = "Git [H]unk",    mode = { "n", "v" } },
+        { "<leader>g", group = "[G]it Actions", mode = { "n", "v" } },
+        { "<leader>q", group = "[Q]uit/Session" },
+        { "<leader>b", group = "[B]uffer" },
+        { "<leader>d", group = "[D]ebug" },
+        { "<leader>t", group = "[T]est" },
+        { "<leader>x", group = "Diagnostic" },
+      },
     },
+  },
 
-    -- NOTE: Plugins can specify dependencies.
-    --
-    -- The dependencies are proper plugin specifications as well - anything
-    -- you do for a plugin at the top level, you can do for a dependency.
-    --
-    -- Use the `dependencies` key to specify the dependencies of a particular plugin
+  -- NOTE: Plugins can specify dependencies.
+  --
+  -- The dependencies are proper plugin specifications as well - anything
+  -- you do for a plugin at the top level, you can do for a dependency.
+  --
+  -- Use the `dependencies` key to specify the dependencies of a particular plugin
 
-    { -- Autocompletion
-        "saghen/blink.cmp",
-        event = "VimEnter",
-        version = "1.*",
+  { -- Autocompletion
+    "saghen/blink.cmp",
+    event = "VimEnter",
+    version = "1.*",
+    dependencies = {
+      -- Snippet Engine
+      {
+        "L3MON4D3/LuaSnip",
+        version = "2.*",
+        build = (function()
+          -- Build Step is needed for regex support in snippets.
+          -- This step is not supported in many windows environments.
+          -- Remove the below condition to re-enable on windows.
+          if vim.fn.has("win32") == 1 or vim.fn.executable("make") == 0 then
+            return
+          end
+          return "make install_jsregexp"
+        end)(),
         dependencies = {
-            -- Snippet Engine
-            {
-                "L3MON4D3/LuaSnip",
-                version = "2.*",
-                build = (function()
-                    -- Build Step is needed for regex support in snippets.
-                    -- This step is not supported in many windows environments.
-                    -- Remove the below condition to re-enable on windows.
-                    if vim.fn.has("win32") == 1 or vim.fn.executable("make") == 0 then
-                        return
-                    end
-                    return "make install_jsregexp"
-                end)(),
-                dependencies = {
-                    -- `friendly-snippets` contains a variety of premade snippets.
-                    --    See the README about individual language/framework/plugin snippets:
-                    --    https://github.com/rafamadriz/friendly-snippets
-                    -- {
-                    --   'rafamadriz/friendly-snippets',
-                    --   config = function()
-                    --     require('luasnip.loaders.from_vscode').lazy_load()
-                    --   end,
-                    -- },
-                },
-                opts = {},
-            },
+          -- `friendly-snippets` contains a variety of premade snippets.
+          --    See the README about individual language/framework/plugin snippets:
+          --    https://github.com/rafamadriz/friendly-snippets
+          -- {
+          --   'rafamadriz/friendly-snippets',
+          --   config = function()
+          --     require('luasnip.loaders.from_vscode').lazy_load()
+          --   end,
+          -- },
         },
-        opts = {
-            keymap = {
-                -- 'default' (recommended) for mappings similar to built-in completions
-                --   <c-y> to accept ([y]es) the completion.
-                --    This will auto-import if your LSP supports it.
-                --    This will expand snippets if the LSP sent a snippet.
-                -- 'super-tab' for tab to accept
-                -- 'enter' for enter to accept
-                -- 'none' for no mappings
-                --
-                -- For an understanding of why the 'default' preset is recommended,
-                -- you will need to read `:help ins-completion`
-                --
-                -- No, but seriously. Please read `:help ins-completion`, it is really good!
-                --
-                -- All presets have the following mappings:
-                -- <tab>/<s-tab>: move to right/left of your snippet expansion
-                -- <c-space>: Open menu or open docs if already open
-                -- <c-n>/<c-p> or <up>/<down>: Select next/previous item
-                -- <c-e>: Hide menu
-                -- <c-k>: Toggle signature help
-                --
-                -- See :h blink-cmp-config-keymap for defining your own keymap
-                preset = "super-tab",
-
-                -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
-                --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
-            },
-
-            appearance = {
-                -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
-                -- Adjusts spacing to ensure icons are aligned
-                nerd_font_variant = "mono",
-            },
-
-            completion = {
-                -- By default, you may press `<c-space>` to show the documentation.
-                -- Optionally, set `auto_show = true` to show the documentation after a delay.
-                documentation = { auto_show = true, auto_show_delay_ms = 500 },
-            },
-
-            snippets = { preset = "luasnip" },
-
-            -- Blink.cmp includes an optional, recommended rust fuzzy matcher,
-            -- which automatically downloads a prebuilt binary when enabled.
-            --
-            -- By default, we use the Lua implementation instead, but you may enable
-            -- the rust implementation via `'prefer_rust_with_warning'`
-            --
-            -- See :h blink-cmp-config-fuzzy for more information
-            fuzzy = { implementation = "lua" },
-
-            -- Shows a signature help window while you type arguments for a function
-            signature = { enabled = true },
-        },
+        opts = {},
+      },
     },
+    opts = {
+      keymap = {
+        -- 'default' (recommended) for mappings similar to built-in completions
+        --   <c-y> to accept ([y]es) the completion.
+        --    This will auto-import if your LSP supports it.
+        --    This will expand snippets if the LSP sent a snippet.
+        -- 'super-tab' for tab to accept
+        -- 'enter' for enter to accept
+        -- 'none' for no mappings
+        --
+        -- For an understanding of why the 'default' preset is recommended,
+        -- you will need to read `:help ins-completion`
+        --
+        -- No, but seriously. Please read `:help ins-completion`, it is really good!
+        --
+        -- All presets have the following mappings:
+        -- <tab>/<s-tab>: move to right/left of your snippet expansion
+        -- <c-space>: Open menu or open docs if already open
+        -- <c-n>/<c-p> or <up>/<down>: Select next/previous item
+        -- <c-e>: Hide menu
+        -- <c-k>: Toggle signature help
+        --
+        -- See :h blink-cmp-config-keymap for defining your own keymap
+        preset = "super-tab",
 
-    -- Highlight todo, notes, etc in comments
-    {
-        "folke/todo-comments.nvim",
-        event = "VimEnter",
-        dependencies = { "nvim-lua/plenary.nvim" },
-        opts = { signs = false },
+        -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
+        --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
+      },
+
+      appearance = {
+        -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
+        -- Adjusts spacing to ensure icons are aligned
+        nerd_font_variant = "mono",
+      },
+
+      completion = {
+        -- By default, you may press `<c-space>` to show the documentation.
+        -- Optionally, set `auto_show = true` to show the documentation after a delay.
+        documentation = { auto_show = true, auto_show_delay_ms = 500 },
+      },
+
+      snippets = { preset = "luasnip" },
+
+      -- Blink.cmp includes an optional, recommended rust fuzzy matcher,
+      -- which automatically downloads a prebuilt binary when enabled.
+      --
+      -- By default, we use the Lua implementation instead, but you may enable
+      -- the rust implementation via `'prefer_rust_with_warning'`
+      --
+      -- See :h blink-cmp-config-fuzzy for more information
+      fuzzy = { implementation = "lua" },
+
+      -- Shows a signature help window while you type arguments for a function
+      signature = { enabled = true },
     },
+  },
 
-    { -- Collection of various small independent plugins/modules
-        "nvim-mini/mini.nvim",
-        config = function()
-            -- Better Around/Inside textobjects
-            --
-            -- Examples:
-            --  - va)  - [V]isually select [A]round [)]paren
-            --  - yinq - [Y]ank [I]nside [N]ext [Q]uote
-            --  - ci'  - [C]hange [I]nside [']quote
-            require("mini.ai").setup({ n_lines = 500 })
+  -- Highlight todo, notes, etc in comments
+  {
+    "folke/todo-comments.nvim",
+    event = "VimEnter",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    opts = { signs = false },
+  },
 
-            -- Add/delete/replace surroundings (brackets, quotes, etc.)
-            --
-            -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
-            -- - sd'   - [S]urround [D]elete [']quotes
-            -- - sr)'  - [S]urround [R]eplace [)] [']
-            require("mini.surround").setup()
+  { -- Collection of various small independent plugins/modules
+    "nvim-mini/mini.nvim",
+    config = function()
+      -- Better Around/Inside textobjects
+      --
+      -- Examples:
+      --  - va)  - [V]isually select [A]round [)]paren
+      --  - yinq - [Y]ank [I]nside [N]ext [Q]uote
+      --  - ci'  - [C]hange [I]nside [']quote
+      require("mini.ai").setup({ n_lines = 500 })
 
-            -- Simple and easy statusline.
-            --  You could remove this setup call if you don't like it,
-            --  and try some other statusline plugin
-            local statusline = require("mini.statusline")
-            -- set use_icons to true if you have a Nerd Font
-            statusline.setup({ use_icons = vim.g.have_nerd_font })
+      -- Add/delete/replace surroundings (brackets, quotes, etc.)
+      --
+      -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
+      -- - sd'   - [S]urround [D]elete [']quotes
+      -- - sr)'  - [S]urround [R]eplace [)] [']
+      require("mini.surround").setup()
 
-            -- You can configure sections in the statusline by overriding their
-            -- default behavior. For example, here we set the section for
-            -- cursor location to LINE:COLUMN
-            ---@diagnostic disable-next-line: duplicate-set-field
-            statusline.section_location = function()
-                return "%2l:%-2v"
-            end
+      -- Simple and easy statusline.
+      --  You could remove this setup call if you don't like it,
+      --  and try some other statusline plugin
+      local statusline = require("mini.statusline")
+      -- set use_icons to true if you have a Nerd Font
+      statusline.setup({ use_icons = vim.g.have_nerd_font })
 
-            -- ... and there is more!
-            --  Check out: https://github.com/nvim-mini/mini.nvim
-        end,
-    },
-    -- Include Plugins
-    { import = "plugins" },
+      -- You can configure sections in the statusline by overriding their
+      -- default behavior. For example, here we set the section for
+      -- cursor location to LINE:COLUMN
+      ---@diagnostic disable-next-line: duplicate-set-field
+      statusline.section_location = function()
+        return "%2l:%-2v"
+      end
+
+      -- ... and there is more!
+      --  Check out: https://github.com/nvim-mini/mini.nvim
+    end,
+  },
+  -- Include Plugins
+  { import = "plugins" },
 }, {
-    ui = {
-        -- If you are using a Nerd Font: set icons to an empty table which will use the
-        -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
-        icons = vim.g.have_nerd_font and {} or {
-            cmd = "⌘",
-            config = "🛠",
-            event = "📅",
-            ft = "📂",
-            init = "⚙",
-            keys = "🗝",
-            plugin = "🔌",
-            runtime = "💻",
-            require = "🌙",
-            source = "📄",
-            start = "🚀",
-            task = "📌",
-            lazy = "💤 ",
-        },
+  ui = {
+    -- If you are using a Nerd Font: set icons to an empty table which will use the
+    -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
+    icons = vim.g.have_nerd_font and {} or {
+      cmd = "⌘",
+      config = "🛠",
+      event = "📅",
+      ft = "📂",
+      init = "⚙",
+      keys = "🗝",
+      plugin = "🔌",
+      runtime = "💻",
+      require = "🌙",
+      source = "📄",
+      start = "🚀",
+      task = "📌",
+      lazy = "💤 ",
     },
+  },
 })
 
 -- The line beneath this is called `modeline`. See `:help modeline`

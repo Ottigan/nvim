@@ -12,6 +12,24 @@ return {
     config = function(_, opts)
         require("persistence").setup(opts)
 
+        local group = vim.api.nvim_create_augroup('PersistenceSession', { clear = true })
+        vim.api.nvim_create_autocmd("User", {
+            group = group,
+            pattern = "PersistenceSavePre",
+            callback = function()
+                for _, id in ipairs(vim.api.nvim_list_bufs()) do
+                    if vim.api.nvim_buf_is_loaded(id) then
+                        local name = vim.api.nvim_buf_get_name(id)
+
+                        if vim.startswith(name, "fugitive:") then
+                            vim.bo.buflisted = false
+                            vim.api.nvim_buf_delete(id, { force = true })
+                        end
+                    end
+                end
+            end
+        })
+
         vim.schedule(function()
             -- Check if we're opening a directory or have no arguments
             local should_load = true

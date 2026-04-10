@@ -30,7 +30,6 @@ return {
             underline = { severity = vim.diagnostic.severity.ERROR },
             virtual_text = true,
             virtual_lines = false,
-            jump = { on_jump = true },
         })
 
         vim.keymap.set("n", "<leader>xx", vim.diagnostic.setloclist, { desc = "Diagnostic Quickfi[x] List" })

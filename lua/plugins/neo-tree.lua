@@ -11,8 +11,10 @@ return {
     },
     lazy = false,
     keys = {
-        { "\\", ":Neotree reveal<CR>", desc = "NeoTree reveal", silent = true },
+        { "\\", ":Neotree reveal toggle=true<CR>", desc = "NeoTree reveal", silent = true },
     },
+    ---@module 'neo-tree'
+    ---@type neotree.Config
     opts = {
         close_if_last_window = false,
         popup_border_style = "", -- or "" to use 'winborder' on Neovim v0.11+

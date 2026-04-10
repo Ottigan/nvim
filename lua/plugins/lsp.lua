@@ -15,6 +15,7 @@ return {
             },
         },
         "saghen/blink.cmp",
+        { "b0o/schemastore.nvim", lazy = true },
     },
     config = function()
         vim.filetype.add({
@@ -32,8 +33,11 @@ return {
             virtual_lines = false,
         })
 
-        vim.keymap.set("n", "<leader>xx", vim.diagnostic.setloclist, { desc = "Diagnostic Quickfi[x] List" })
         vim.keymap.set("n", "<leader>xe", vim.diagnostic.open_float, { desc = "Show Diagnostic [E]rror" })
+        vim.keymap.set("n", "<leader>xx", vim.diagnostic.setloclist, { desc = "Diagnostic Quickfi[x] List" })
+        vim.keymap.set("n", "<leader>xc", function()
+            vim.fn.setqflist({})
+        end, { desc = "[C]lear Diagnostic Quickfix List" })
         vim.keymap.set("n", "[d", function()
             vim.diagnostic.jump({ count = -1 })
         end, { desc = "Previous [D]iagnostic" })
@@ -47,6 +51,10 @@ return {
             vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.ERROR })
         end, { desc = "Next [E]rror" })
 
+        -- Augroups created once; autocmds inside are buffer-scoped to avoid accumulation.
+        local highlight_augroup = vim.api.nvim_create_augroup("user-lsp-highlight", { clear = true })
+        local detach_augroup = vim.api.nvim_create_augroup("user-lsp-detach", { clear = true })
+
         vim.api.nvim_create_autocmd("LspAttach", {
             group = vim.api.nvim_create_augroup("user-lsp-attach", { clear = true }),
             callback = function(event)
@@ -55,14 +63,20 @@ return {
                     vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
                 end
 
+                local builtin = require("telescope.builtin")
+                map("grr", builtin.lsp_references, "[G]oto [R]eferences")
+                map("gri", builtin.lsp_implementations, "[G]oto [I]mplementation")
+                map("grt", builtin.lsp_type_definitions, "[G]oto [T]ype Definition")
                 map("grn", vim.lsp.buf.rename, "[R]e[n]ame")
                 map("gra", vim.lsp.buf.code_action, "[G]oto Code [A]ction", { "n", "x" })
+                map("grx", vim.lsp.codelens.run, "[G]oto E[x]ecute Code Lens")
+                map("grd", builtin.lsp_definitions, "[G]oto [D]efinition")
                 map("grD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
-                map("gh", vim.lsp.buf.hover, "[H]over Documentation")
+                map("gO", builtin.lsp_document_symbols, "Document Symbols")
+                map("gW", builtin.lsp_dynamic_workspace_symbols, "Workspace Symbols")
 
                 local client = vim.lsp.get_client_by_id(event.data.client_id)
                 if client and client:supports_method("textDocument/documentHighlight", event.buf) then
-                    local highlight_augroup = vim.api.nvim_create_augroup("user-lsp-highlight", { clear = false })
                     vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
                         buffer = event.buf,
                         group = highlight_augroup,
@@ -76,17 +90,18 @@ return {
                     })
 
                     vim.api.nvim_create_autocmd("LspDetach", {
-                        group = vim.api.nvim_create_augroup("user-lsp-detach", { clear = true }),
+                        group = detach_augroup,
+                        buffer = event.buf,
                         callback = function(event2)
                             vim.lsp.buf.clear_references()
-                            vim.api.nvim_clear_autocmds({ group = "user-lsp-highlight", buffer = event2.buf })
+                            vim.api.nvim_clear_autocmds({ group = highlight_augroup, buffer = event2.buf })
                         end,
                     })
                 end
 
                 if client and client.name == "ts_ls" then
-                    local augroup = vim.api.nvim_create_augroup("ts-auto-import", { clear = false })
-                    vim.api.nvim_clear_autocmds({ group = augroup, buffer = event.buf })
+                    -- Buffer-specific augroup: clear=true removes stale autocmds on re-attach.
+                    local augroup = vim.api.nvim_create_augroup("ts-auto-import-" .. event.buf, { clear = true })
 
                     local function execute_code_action(action_kind)
                         ---@type lsp.CodeActionParams
@@ -136,14 +151,66 @@ return {
                     },
                 },
             },
-            lua_ls = {},
-            eslint = {},
+            gopls = {
+                settings = {
+                    gopls = {
+                        analyses = {
+                            unusedparams = true,
+                        },
+                        staticcheck = true,
+                        gofumpt = true,
+                    },
+                },
+            },
+            lua_ls = {
+                on_init = function(client)
+                    if client.workspace_folders then
+                        local path = client.workspace_folders[1].name
+                        if
+                            path ~= vim.fn.stdpath("config")
+                            and (vim.uv.fs_stat(path .. "/.luarc.json") or vim.uv.fs_stat(path .. "/.luarc.jsonc"))
+                        then
+                            return
+                        end
+                    end
+
+                    client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua, {
+                        runtime = {
+                            version = "LuaJIT",
+                            path = { "lua/?.lua", "lua/?/init.lua" },
+                        },
+                        workspace = {
+                            checkThirdParty = false,
+                            library = vim.api.nvim_get_runtime_file("", true),
+                        },
+                    })
+                end,
+                settings = {
+                    Lua = {
+                        diagnostics = {
+                            globals = { "vim" },
+                            disable = { "inject-field" },
+                        },
+                        telemetry = {
+                            enable = false,
+                        },
+                    },
+                },
+            },
             cssls = {
                 filetypes = { "css", "scss", "less" },
                 settings = {
                     css = { validate = true },
                     scss = { validate = true },
                     less = { validate = true },
+                },
+            },
+            jsonls = {
+                settings = {
+                    json = {
+                        schemas = require("schemastore").json.schemas(),
+                        validate = { enable = true },
+                    },
                 },
             },
         }
@@ -157,45 +224,5 @@ return {
             vim.lsp.config(name, server)
             vim.lsp.enable(name)
         end
-
-        vim.lsp.config("lua_ls", {
-            on_init = function(client)
-                if client.workspace_folders then
-                    local path = client.workspace_folders[1].name
-                    if
-                        path ~= vim.fn.stdpath("config")
-                        and (vim.uv.fs_stat(path .. "/.luarc.json") or vim.uv.fs_stat(path .. "/.luarc.jsonc"))
-                    then
-                        return
-                    end
-                end
-
-                client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua, {
-                    runtime = {
-                        version = "LuaJIT",
-                        path = { "lua/?.lua", "lua/?/init.lua" },
-                    },
-                    workspace = {
-                        checkThirdParty = false,
-                        library = vim.api.nvim_get_runtime_file("", true),
-                    },
-                })
-            end,
-            settings = {
-                Lua = {
-                    diagnostics = {
-                        globals = { "vim" },
-                        disable = { "inject-field" },
-                    },
-                    workspace = {
-                        library = vim.api.nvim_get_runtime_file("", true),
-                        checkThirdParty = false,
-                    },
-                    telemetry = {
-                        enable = false,
-                    },
-                },
-            },
-        })
     end,
 }

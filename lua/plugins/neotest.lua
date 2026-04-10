@@ -5,20 +5,24 @@ return {
         "nvim-lua/plenary.nvim",
         "nvim-treesitter/nvim-treesitter",
         "nvim-neotest/neotest-jest",
+        "nvim-neotest/neotest-go",
     },
     config = function()
+        local function jest_cmd()
+            if vim.fn.filereadable("pnpm-lock.yaml") == 1 then
+                return "pnpm jest"
+            elseif vim.fn.filereadable("yarn.lock") == 1 then
+                return "yarn jest"
+            else
+                return "npx jest"
+            end
+        end
+
         require("neotest").setup({
             adapters = {
+                require("neotest-go"),
                 require("neotest-jest")({
-                    jestCommand = function()
-                        if vim.fn.filereadable("pnpm-lock.yaml") == 1 then
-                            return "pnpm jest"
-                        elseif vim.fn.filereadable("yarn.lock") == 1 then
-                            return "yarn jest"
-                        else
-                            return "npx jest"
-                        end
-                    end,
+                    jestCommand = jest_cmd,
                     jest_test_discovery = true, -- Discover it.each
                     jestConfigFile = function(file)
                         local root = vim.fn.getcwd()
@@ -100,16 +104,7 @@ return {
         {
             "<leader>tw",
             function()
-                -- Respect the same package manager as jestCommand
-                local cmd
-                if vim.fn.filereadable("pnpm-lock.yaml") == 1 then
-                    cmd = "pnpm jest --watch"
-                elseif vim.fn.filereadable("yarn.lock") == 1 then
-                    cmd = "yarn jest --watch"
-                else
-                    cmd = "npx jest --watch"
-                end
-                require("neotest").run.run({ jestCommand = cmd })
+                require("neotest").run.run({ jestCommand = jest_cmd() .. " --watch" })
             end,
             desc = "[T]est [W]atch",
         },

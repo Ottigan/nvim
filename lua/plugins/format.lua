@@ -39,10 +39,10 @@ return {
         end,
         formatters_by_ft = {
             lua = { "stylua" },
-            javascript = { "eslint_d", "eslint", stop_after_first = true },
-            typescript = { "eslint_d", "eslint", stop_after_first = true },
-            javascriptreact = { "eslint_d", "eslint", stop_after_first = true },
-            typescriptreact = { "eslint_d", "eslint", stop_after_first = true },
+            javascript = { "eslint_d" },
+            typescript = { "eslint_d" },
+            javascriptreact = { "eslint_d" },
+            typescriptreact = { "eslint_d" },
             scss = { "stylelint" },
 
             -- Conform can also run multiple formatters sequentially

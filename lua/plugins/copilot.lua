@@ -1,10 +1,22 @@
 return {
-    "github/copilot.vim",
-    config = function()
-        vim.g.copilot_no_tab_map = true
-        vim.keymap.set("i", "<S-Tab>", 'copilot#Accept("\\<S-Tab>")', {
-            expr = true,
-            replace_keycodes = false,
-        })
-    end,
+    {
+        "zbirenbaum/copilot.lua",
+        cmd = "Copilot",
+        event = "InsertEnter",
+        opts = {
+            suggestion = {
+                enabled = true,
+                auto_trigger = true,
+                keymap = {
+                    accept = "<S-Tab>",
+                    accept_word = "<M-w>",
+                    accept_line = "<M-l>",
+                    next = "<M-]>",
+                    prev = "<M-[>",
+                    dismiss = "<C-]>",
+                },
+            },
+            panel = { enabled = false },
+        },
+    },
 }

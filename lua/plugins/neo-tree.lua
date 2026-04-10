@@ -11,7 +11,7 @@ return {
     },
     lazy = false,
     keys = {
-        { "\\", ":Neotree reveal toggle=true<CR>", desc = "NeoTree reveal", silent = true },
+        { "\\", ":Neotree reveal toggle=true<cr>", desc = "NeoTree reveal", silent = true },
     },
     ---@module 'neo-tree'
     ---@type neotree.Config

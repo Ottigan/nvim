@@ -20,9 +20,18 @@ return {
                 for _, id in ipairs(vim.api.nvim_list_bufs()) do
                     if vim.api.nvim_buf_is_loaded(id) then
                         local name = vim.api.nvim_buf_get_name(id)
+                        local patterns = { "fugitive:", "view:", "diffview:" }
 
-                        if vim.startswith(name, "fugitive:") then
-                            vim.bo.buflisted = false
+                        local should_delete = false
+                        for _, pattern in ipairs(patterns) do
+                            if string.find(name, pattern) then
+                                should_delete = true
+                                break
+                            end
+                        end
+
+                        if should_delete then
+                            vim.bo[id].buflisted = false
                             vim.api.nvim_buf_delete(id, { force = true })
                         end
                     end

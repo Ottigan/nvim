@@ -19,32 +19,39 @@ return {
     },
     keys = {
         {
-            "<F5>",
+            "<F1>",
             function()
                 require("dap").continue()
             end,
             desc = "Debug: Start/Continue",
         },
         {
-            "<F1>",
+            "<F2>",
             function()
                 require("dap").step_into()
             end,
             desc = "Debug: Step Into",
         },
         {
-            "<F2>",
+            "<F3>",
             function()
                 require("dap").step_over()
             end,
             desc = "Debug: Step Over",
         },
         {
-            "<F3>",
+            "<F4>",
             function()
                 require("dap").step_out()
             end,
             desc = "Debug: Step Out",
+        },
+        {
+            "<F5>",
+            function()
+                require("dap").step_back()
+            end,
+            desc = "Debug: Step Back",
         },
         {
             "<leader>db",
@@ -113,6 +120,9 @@ return {
             },
         }
 
+        -- ── Go ────────────────────────────────────────────────────────────────
+        require("dap-go").setup()
+
         -- ── DAP UI ────────────────────────────────────────────────────────────
         local dapui = require("dapui")
         dapui.setup()
@@ -146,12 +156,5 @@ return {
         dap.listeners.before.event_exited.dapui_config = function()
             dapui.close()
         end
-
-        -- ── Go ────────────────────────────────────────────────────────────────
-        require("dap-go").setup({
-            delve = {
-                detached = vim.fn.has("win32") == 0,
-            },
-        })
     end,
 }

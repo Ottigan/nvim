@@ -14,11 +14,6 @@ return {
         dependencies = {
             "tpope/vim-rhubarb",
         },
-        keys = {
-            { "<leader>gb", "<cmd>Git blame<cr>", desc = "Git Blame File" },
-            { "<leader>gh", "<cmd>diffget //2<cr>", desc = "Git Diff Get Left" },
-            { "<leader>gl", "<cmd>diffget //3<cr>", desc = "Git Diff Get Right" },
-        },
     },
 
     {
@@ -27,7 +22,7 @@ return {
         cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewFileHistory" },
         keys = {
             { "<leader>gd", "<cmd>DiffviewOpen<cr>", desc = "Git Diff View" },
-            { "<leader>gH", "<cmd>DiffviewFileHistory %<cr>", desc = "Git File History" },
+            { "<leader>gh", "<cmd>DiffviewFileHistory %<cr>", desc = "Git File History" },
             { "<leader>gq", "<cmd>DiffviewClose<cr>", desc = "Git Close Diff" },
         },
     },
@@ -89,6 +84,7 @@ return {
                 map("n", "<leader>hR", gitsigns.reset_buffer, { desc = "git [R]eset buffer" })
                 map("n", "<leader>hp", gitsigns.preview_hunk_inline, { desc = "git [p]review hunk" })
                 map("n", "<leader>hb", gitsigns.blame_line, { desc = "git [b]lame line" })
+                map("n", "<leader>gb", gitsigns.blame, { desc = "Git Blame File" })
             end,
         },
         config = function(_, opts)

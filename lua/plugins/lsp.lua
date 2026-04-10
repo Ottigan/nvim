@@ -64,12 +64,12 @@ return {
                 end
 
                 local builtin = require("telescope.builtin")
-                map("grr", builtin.lsp_references, "[G]oto [R]eferences")
-                map("gri", builtin.lsp_implementations, "[G]oto [I]mplementation")
-                map("grt", builtin.lsp_type_definitions, "[G]oto [T]ype Definition")
-                map("grn", vim.lsp.buf.rename, "[R]e[n]ame")
                 map("gra", vim.lsp.buf.code_action, "[G]oto Code [A]ction", { "n", "x" })
-                map("grx", vim.lsp.codelens.run, "[G]oto E[x]ecute Code Lens")
+                map("gri", builtin.lsp_implementations, "[G]oto [I]mplementation")
+                map("grn", vim.lsp.buf.rename, "[R]e[n]ame")
+                map("grr", builtin.lsp_references, "[G]oto [R]eferences")
+                map("grt", builtin.lsp_type_definitions, "[G]oto [T]ype Definition")
+                map("grx", vim.lsp.codelens.run, "Code Lens E[x]ecute")
                 map("grd", builtin.lsp_definitions, "[G]oto [D]efinition")
                 map("grD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
                 map("gO", builtin.lsp_document_symbols, "Document Symbols")

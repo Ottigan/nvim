@@ -59,9 +59,9 @@ return {
         "dlyongemallo/diffview.nvim",
         cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewFileHistory" },
         keys = {
-            { "<leader>gd", "<cmd>DiffviewOpen<cr>", desc = "Git Diff View" },
+            { "<leader>gd", "<cmd>DiffviewOpen<cr>",          desc = "Git Diff View" },
             { "<leader>gh", "<cmd>DiffviewFileHistory %<cr>", desc = "Git File History" },
-            { "<leader>gq", "<cmd>DiffviewClose<cr>", desc = "Git Close Diff" },
+            { "<leader>gq", "<cmd>DiffviewClose<cr>",         desc = "Git Close Diff" },
         },
         opts = {
             keymaps = {

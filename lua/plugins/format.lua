@@ -32,7 +32,9 @@ return {
                 return nil
             else
                 return {
-                    timeout_ms = 500,
+                    timeout_ms = 3000,
+                    async = false,
+                    quiet = false,
                     lsp_format = "fallback",
                 }
             end

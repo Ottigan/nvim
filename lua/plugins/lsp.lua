@@ -34,10 +34,16 @@ return {
         })
 
         vim.keymap.set("n", "<leader>xe", vim.diagnostic.open_float, { desc = "Show Diagnostic [E]rror" })
-        vim.keymap.set("n", "<leader>xx", vim.diagnostic.setloclist, { desc = "Diagnostic Quickfi[x] List" })
-        vim.keymap.set("n", "<leader>xc", function()
-            vim.fn.setqflist({})
-        end, { desc = "[C]lear Diagnostic Quickfix List" })
+        vim.keymap.set("n", "<leader>xx", function()
+            if vim.fn.getqflist({ winid = 1 }).winid ~= 0 then
+                vim.cmd.cclose()
+                return
+            end
+
+            vim.diagnostic.setqflist()
+            vim.cmd.copen()
+        end, { desc = "Toggle Diagnostic Quickfi[x] List" })
+
         vim.keymap.set("n", "[d", function()
             vim.diagnostic.jump({ count = -1 })
         end, { desc = "Previous [D]iagnostic" })

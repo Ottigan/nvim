@@ -5,7 +5,46 @@ return {
         keys = {
             { "<leader>cu", "<cmd>GitLink<cr>", mode = { "n", "v" }, desc = "Copy remote URL" },
         },
-        opts = {},
+        opts = {
+            router = {
+                browse = {
+                    ["^gitlab%.evolution%.com"] = "https://gitlab.evolution.com/"
+                        .. "{_A.ORG}/"
+                        .. "{_A.REPO}/blob/"
+                        .. "{_A.REV}/"
+                        .. "{_A.FILE}"
+                        .. "#L{_A.LSTART}"
+                        .. "{(_A.LEND > _A.LSTART and ('-L' .. _A.LEND) or '')}",
+                },
+                blame = {
+                    ["^gitlab%.evolution%.com"] = "https://gitlab.evolution.com/"
+                        .. "{_A.ORG}/"
+                        .. "{_A.REPO}/blame/"
+                        .. "{_A.REV}/"
+                        .. "{_A.FILE}"
+                        .. "#L{_A.LSTART}"
+                        .. "{(_A.LEND > _A.LSTART and ('-L' .. _A.LEND) or '')}",
+                },
+                default_branch = {
+                    ["^gitlab%.evolution%.com"] = "https://gitlab.evolution.com/"
+                        .. "{_A.ORG}/"
+                        .. "{_A.REPO}/blob/"
+                        .. "{_A.DEFAULT_BRANCH}/"
+                        .. "{_A.FILE}"
+                        .. "#L{_A.LSTART}"
+                        .. "{(_A.LEND > _A.LSTART and ('-L' .. _A.LEND) or '')}",
+                },
+                current_branch = {
+                    ["^gitlab%.evolution%.com"] = "https://gitlab.evolution.com/"
+                        .. "{_A.ORG}/"
+                        .. "{_A.REPO}/blob/"
+                        .. "{_A.CURRENT_BRANCH}/"
+                        .. "{_A.FILE}"
+                        .. "#L{_A.LSTART}"
+                        .. "{(_A.LEND > _A.LSTART and ('-L' .. _A.LEND) or '')}",
+                },
+            },
+        },
     },
 
     {
@@ -17,13 +56,19 @@ return {
     },
 
     {
-        "sindrets/diffview.nvim",
-        dependencies = { "nvim-lua/plenary.nvim" },
+        "dlyongemallo/diffview.nvim",
         cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewFileHistory" },
         keys = {
             { "<leader>gd", "<cmd>DiffviewOpen<cr>", desc = "Git Diff View" },
             { "<leader>gh", "<cmd>DiffviewFileHistory %<cr>", desc = "Git File History" },
             { "<leader>gq", "<cmd>DiffviewClose<cr>", desc = "Git Close Diff" },
+        },
+        opts = {
+            keymaps = {
+                file_panel = {
+                    { { "n", "x" }, "<space>", false },
+                },
+            },
         },
     },
 

@@ -137,11 +137,14 @@ return {
                             execute_code_action("source.addMissingImports.ts")
                             execute_code_action("source.removeUnusedImports.ts")
 
-                            require("conform").format({
-                                bufnr = vim.api.nvim_get_current_buf(),
-                                timeout_ms = 500,
-                                lsp_format = "fallback",
-                            })
+                            vim.schedule(function()
+                                require("conform").format({
+                                    bufnr = vim.api.nvim_get_current_buf(),
+                                    timeout_ms = 3000,
+                                    lsp_format = "fallback",
+                                    async = true,
+                                })
+                            end)
                         end,
                     })
                 end

@@ -1,3 +1,9 @@
+local FORMAT_OPTIONS = {
+    timeout_ms = 3000,
+    async = true,
+    lsp_format = "fallback",
+}
+
 return {
     "stevearc/conform.nvim",
     event = { "BufWritePre" },
@@ -6,7 +12,7 @@ return {
         {
             "<leader>f",
             function()
-                require("conform").format({ async = true, lsp_format = "fallback" })
+                require("conform").format(FORMAT_OPTIONS)
             end,
             mode = "",
             desc = "[F]ormat buffer",
@@ -31,12 +37,7 @@ return {
             if disable_filetypes[vim.bo[bufnr].filetype] or ts_filetypes[vim.bo[bufnr].filetype] then
                 return nil
             else
-                return {
-                    timeout_ms = 3000,
-                    async = false,
-                    quiet = false,
-                    lsp_format = "fallback",
-                }
+                return FORMAT_OPTIONS
             end
         end,
         formatters_by_ft = {

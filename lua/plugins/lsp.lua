@@ -153,6 +153,7 @@ return {
 
         local capabilities = require("blink.cmp").get_lsp_capabilities()
         local servers = {
+            just = {},
             ts_ls = {
                 init_options = {
                     preferences = {

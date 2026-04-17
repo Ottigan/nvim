@@ -48,27 +48,20 @@ return {
     },
 
     {
-        "tpope/vim-fugitive",
-        cmd = { "Git", "G" },
+        "kdheepak/lazygit.nvim",
+        cmd = {
+            "LazyGit",
+            "LazyGitCurrentFile",
+            "LazyGitFilter",
+            "LazyGitFilterCurrentFile",
+        },
         dependencies = {
-            "tpope/vim-rhubarb",
+            "nvim-lua/plenary.nvim",
         },
-    },
-
-    {
-        "dlyongemallo/diffview.nvim",
-        cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewFileHistory" },
         keys = {
-            { "<leader>gd", "<cmd>DiffviewOpen<cr>",          desc = "Git Diff View" },
-            { "<leader>gh", "<cmd>DiffviewFileHistory %<cr>", desc = "Git File History" },
-            { "<leader>gq", "<cmd>DiffviewClose<cr>",         desc = "Git Close Diff" },
-        },
-        opts = {
-            keymaps = {
-                file_panel = {
-                    { { "n", "x" }, "<space>", false },
-                },
-            },
+            { "<leader>gg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
+            { "<leader>gf", "<cmd>LazyGitCurrentFile<cr>", desc = "LazyGit Current File" },
+            { "<leader>gh", "<cmd>LazyGitFilterCurrentFile<cr>", desc = "LazyGit File History" },
         },
     },
 

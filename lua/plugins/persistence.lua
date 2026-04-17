@@ -20,7 +20,7 @@ return {
                 for _, id in ipairs(vim.api.nvim_list_bufs()) do
                     if vim.api.nvim_buf_is_loaded(id) then
                         local name = vim.api.nvim_buf_get_name(id)
-                        local patterns = { "fugitive:", "view:", "diffview:" }
+                        local patterns = { "lazygit" }
 
                         local should_delete = false
                         for _, pattern in ipairs(patterns) do

@@ -6,7 +6,7 @@ return {
         {
             "<leader>f",
             function()
-                require("conform").format({ async = true, })
+                require("conform").format({ async = true })
             end,
             mode = "",
             desc = "[F]ormat buffer",
@@ -16,23 +16,24 @@ return {
     ---@type conform.setupOpts
     opts = {
         formatters_by_ft = {
-            lua = { "stylua" },
             javascript = { "eslint_d" },
             typescript = { "eslint_d" },
             javascriptreact = { "eslint_d" },
             typescriptreact = { "eslint_d" },
             scss = { "stylelint" },
         },
+
         default_format_opts = {
             lsp_format = "fallback",
         },
+
         format_on_save = function(bufnr)
             -- Disable for TypeScript/JavaScript - handled manually in ts_ls autocmd
             local disable_filetypes = {
                 "typescript",
                 "javascript",
                 "typescriptreact",
-                "javascriptreact"
+                "javascriptreact",
             }
 
             if vim.tbl_contains(disable_filetypes, vim.bo[bufnr].filetype) then

@@ -1,25 +1,11 @@
 return {
-    "nvim-telescope/telescope.nvim",
-    event = "VimEnter",
+    'nvim-telescope/telescope.nvim',
+    version = '*',
     dependencies = {
-        "nvim-lua/plenary.nvim",
-        { -- If encountering errors, see telescope-fzf-native README for installation instructions
-            "nvim-telescope/telescope-fzf-native.nvim",
-
-            -- `build` is used to run some command when the plugin is installed/updated.
-            -- This is only run then, not every time Neovim starts up.
-            build = "make",
-
-            -- `cond` is a condition used to determine whether this plugin should be
-            -- installed and loaded.
-            cond = function()
-                return vim.fn.executable("make") == 1
-            end,
-        },
+        'nvim-lua/plenary.nvim',
+        { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
         { "nvim-telescope/telescope-ui-select.nvim" },
-
-        -- Useful for getting pretty icons, but requires a Nerd Font.
-        { "nvim-tree/nvim-web-devicons",            enabled = vim.g.have_nerd_font },
+        { "nvim-tree/nvim-web-devicons",              enabled = vim.g.have_nerd_font },
     },
     config = function()
         -- [[ Configure Telescope ]]
@@ -43,17 +29,12 @@ return {
                 buffers = {
                     mappings = {
                         n = {
-                            ['dd'] = require('telescope.actions').delete_buffer, -- Use 'dd' in normal mode
+                            ["dd"] = require("telescope.actions").delete_buffer, -- Use 'dd' in normal mode
                         },
                         i = {
-                            ['<C-d>'] = require('telescope.actions').delete_buffer, -- Keep using '<C-d>' in insert mode
+                            ["<C-d>"] = require("telescope.actions").delete_buffer, -- Keep using '<C-d>' in insert mode
                         },
-                    }
-                },
-                find_files = {
-                    -- Use fd for better glob pattern support, or fall back to rg
-                    -- With fd, you can search: evo-favorite/**/WinMessage
-                    find_command = { "fd", "--type", "f", "--hidden", "--exclude", ".git" },
+                    },
                 },
             },
             extensions = {
@@ -67,7 +48,7 @@ return {
 
         -- Find nearest parent directory containing a package marker (package.json, etc.)
         local function find_package_root()
-            local markers = { "package.json", "Cargo.toml", "cargo.toml", "go.mod" }
+            local markers = { "package.json", "Cargo.toml", "go.mod" }
             local current = vim.fn.expand("%:p:h")
             for _, marker in ipairs(markers) do
                 local found = vim.fs.find(marker, { path = current, upward = true })[1]

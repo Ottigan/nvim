@@ -20,7 +20,7 @@ return {
             "yaml",
             "markdown",
             "bash",
-            "rust"
+            "rust",
         }
 
         require("nvim-treesitter").install(languages)

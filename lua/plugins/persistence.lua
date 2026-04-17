@@ -12,15 +12,21 @@ return {
     config = function(_, opts)
         require("persistence").setup(opts)
 
-        local group = vim.api.nvim_create_augroup('PersistenceSession', { clear = true })
+        local group = vim.api.nvim_create_augroup("PersistenceSession", { clear = true })
         vim.api.nvim_create_autocmd("User", {
             group = group,
             pattern = "PersistenceSavePre",
             callback = function()
+                local patterns = {}
+
+                -- Add patterns for buffers you want to exclude from the session
+                if #patterns == 0 then
+                    return
+                end
+
                 for _, id in ipairs(vim.api.nvim_list_bufs()) do
                     if vim.api.nvim_buf_is_loaded(id) then
                         local name = vim.api.nvim_buf_get_name(id)
-                        local patterns = { "lazygit" }
 
                         local should_delete = false
                         for _, pattern in ipairs(patterns) do
@@ -36,7 +42,7 @@ return {
                         end
                     end
                 end
-            end
+            end,
         })
 
         vim.schedule(function()

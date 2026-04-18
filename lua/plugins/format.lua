@@ -21,6 +21,7 @@ return {
             javascriptreact = { "eslint_d" },
             typescriptreact = { "eslint_d" },
             scss = { "stylelint" },
+            yaml = { "prettierd" },
         },
 
         default_format_opts = {

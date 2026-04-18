@@ -12,11 +12,11 @@ return {
     },
     keys = {
         {
-            "<leader>nh",
+            "<leader>h",
             function()
                 Snacks.notifier.show_history()
             end,
-            desc = "[N]otification [H]istory",
+            desc = "Notification [h]istory",
         },
     },
 }

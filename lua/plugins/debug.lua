@@ -17,85 +17,6 @@ return {
             },
         },
     },
-    keys = {
-        {
-            "<F1>",
-            function()
-                require("dap").continue()
-            end,
-            desc = "Debug: Start/Continue",
-        },
-        {
-            "<F2>",
-            function()
-                require("dap").step_into()
-            end,
-            desc = "Debug: Step Into",
-        },
-        {
-            "<F3>",
-            function()
-                require("dap").step_over()
-            end,
-            desc = "Debug: Step Over",
-        },
-        {
-            "<F4>",
-            function()
-                require("dap").step_out()
-            end,
-            desc = "Debug: Step Out",
-        },
-        {
-            "<F5>",
-            function()
-                require("dap").step_back()
-            end,
-            desc = "Debug: Step Back",
-        },
-        {
-            "<leader>db",
-            function()
-                require("dap").toggle_breakpoint()
-            end,
-            desc = "[D]ebug Toggle [B]reakpoint",
-        },
-        {
-            "<leader>dB",
-            function()
-                require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
-            end,
-            desc = "[D]ebug Set Conditional [B]reakpoint",
-        },
-        {
-            "<leader>dh",
-            function()
-                require("dap.ui.widgets").hover()
-            end,
-            desc = "[D]ebug [H]over value",
-        },
-        {
-            "<leader>de",
-            function()
-                require("dap.ui.widgets").centered_float(require("dap.ui.widgets").expression)
-            end,
-            desc = "[D]ebug [E]valuate expression",
-        },
-        {
-            "<leader>ds",
-            function()
-                require("dap.ui.widgets").centered_float(require("dap.ui.widgets").scopes)
-            end,
-            desc = "[D]ebug [S]copes",
-        },
-        {
-            "<F7>",
-            function()
-                require("dapui").toggle()
-            end,
-            desc = "Debug: Toggle UI",
-        },
-    },
     config = function()
         local dap = require("dap")
 
@@ -156,5 +77,31 @@ return {
         dap.listeners.before.event_exited.dapui_config = function()
             dapui.close()
         end
+
+        local widgets = require("dap.ui.widgets")
+
+        vim.keymap.set("n", "<F1>", dap.continue, { desc = "[D]ebug [C]ontinue" })
+        vim.keymap.set("n", "<F2>", dap.step_into, { desc = "[D]ebug Step [I]nto" })
+        vim.keymap.set("n", "<F3>", dap.step_over, { desc = "[D]ebug Step [O]ver" })
+        vim.keymap.set("n", "<F4>", dap.step_out, { desc = "[D]ebug Step O[u]t" })
+        vim.keymap.set("n", "<F5>", dap.step_back, { desc = "[D]ebug Step [B]ack" })
+        vim.keymap.set("n", "<F6>", dap.restart, { desc = "[D]ebug Reverse [C]ontinue" })
+        vim.keymap.set("n", "<F7>", dapui.toggle, { desc = "[D]ebug Toggle [U]I" })
+        vim.keymap.set("n", "<leader>db", dap.toggle_breakpoint, { desc = "[D]ebug Toggle [B] reakpoint" })
+        vim.keymap.set("n", "<leader>dB", function()
+            dap.set_breakpoint(vim.fn.input("Breakpoint condition: "))
+        end, { desc = "[D]ebug Set Conditional [B]reakpoint" })
+        vim.keymap.set("n", "<leader>dh", widgets.hover, { desc = "[D]ebug [H]over value" })
+        vim.keymap.set("n", "<leader>dl", dap.run_last, { desc = "[D]ebug Run [L]ast" })
+        vim.keymap.set("n", "<leader>de", function()
+            widgets.centered_float(widgets.expression)
+        end, { desc = "[D]ebug [E]valuate expression" })
+        vim.keymap.set("n", "<Leader>df", function()
+            widgets.centered_float(widgets.frames)
+        end, { desc = "[D]ebug Stack [F]rames" })
+        vim.keymap.set("n", "<leader>ds", function()
+            widgets.centered_float(widgets.scopes)
+        end, { desc = "[D]ebug [S]copes" })
+        vim.keymap.set("n", "<leader>dt", dap.terminate, { desc = "[D]ebug [T]erminate" })
     end,
 }

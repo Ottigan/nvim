@@ -27,9 +27,9 @@ require("lazy").setup({
 
             -- Document existing key chains
             spec = {
-                { "<leader>s", group = "[S]earch",       mode = { "n", "v" } },
-                { "<leader>g", group = "[G]it",          mode = { "n", "v" } },
-                { "<leader>q", group = "[Q]uit/Session" },
+                { "<leader>s", group = "[S]earch",        mode = { "n", "v" } },
+                { "<leader>g", group = "[G]it",           mode = { "n", "v" } },
+                { "<leader>q", group = "[Q]uit/[S]ession" },
                 { "<leader>b", group = "[B]uffer" },
                 { "<leader>d", group = "[D]ebug" },
                 { "<leader>t", group = "[T]est" },
@@ -62,7 +62,9 @@ require("lazy").setup({
             --
             -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
             -- - sd'   - [S]urround [D]elete [']quotes
+            -- - sdn(   - [S]urround [D]elete [N]ext [(]paren
             -- - sr)'  - [S]urround [R]eplace [)] [']
+            -- - srn({ - [S]urround [R]eplace [N]ext [(] with [{]brace
             require("mini.surround").setup()
 
             -- Simple and easy statusline.

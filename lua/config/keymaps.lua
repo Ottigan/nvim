@@ -9,10 +9,7 @@ vim.keymap.set("n", "<Esc>", function()
 end)
 
 -- Save
-vim.keymap.set("n", "<D-s>", "<cmd>w<cr>", { desc = "Save file" })
-vim.keymap.set("n", "<C-s>", "<cmd>w<cr>", { desc = "Save file" })
-vim.keymap.set("i", "<D-s>", "<cmd>w<cr>", { desc = "Save file" })
-vim.keymap.set("i", "<C-s>", "<cmd>w<cr>", { desc = "Save file" })
+vim.keymap.set("n", "<leader>w", "<cmd>w<cr>", { desc = "[W]rite file" })
 
 -- Copy
 vim.keymap.set("n", "<leader>cr", function()
@@ -49,6 +46,11 @@ vim.keymap.set("n", "<leader>bD", "<cmd>bdelete!<cr>", { desc = "[B]uffer [D]ele
 vim.keymap.set("n", "<leader>bn", "<cmd>bnext<CR>", { desc = "[B]uffer [N]ext" })
 vim.keymap.set("n", "<leader>bp", "<cmd>bprevious<CR>", { desc = "[B]uffer [P]revious" })
 vim.keymap.set("n", "<leader>bx", "<cmd>%bdelete|edit#|bdelete#<CR>", { desc = "[B]uffer delete all e[X]cept current" })
+
+-- Quit/session
+vim.keymap.set("n", "<leader>qq", "<cmd>quit<cr>", { desc = "[Q]uit window" })
+vim.keymap.set("n", "<leader>qa", "<cmd>qall<cr>", { desc = "Quit [A]ll" })
+vim.keymap.set("n", "<leader>qA", "<cmd>qall!<cr>", { desc = "Quit [A]ll (force)" })
 
 -- Move lines up/down
 vim.keymap.set("n", "<A-j>", "<cmd>m .+1<CR>==", { desc = "Move line down" })

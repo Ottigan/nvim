@@ -9,12 +9,12 @@ vim.keymap.set("n", "<Esc>", function()
 end)
 
 -- Save file
-vim.keymap.set({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save File" })
+vim.keymap.set({ "i", "x", "n", "s" }, "<C-s>", ":w<cr><esc>", { desc = "Save File" })
 
 -- Quit
-vim.keymap.set("n", "<leader>qq", "<cmd>quit<cr>", { desc = "[Q]uit window" })
-vim.keymap.set("n", "<leader>qa", "<cmd>qall<cr>", { desc = "Quit [A]ll" })
-vim.keymap.set("n", "<leader>qA", "<cmd>qall!<cr>", { desc = "Quit [A]ll (force)" })
+vim.keymap.set("n", "<leader>qq", ":quit<cr>", { desc = "[Q]uit window" })
+vim.keymap.set("n", "<leader>qa", ":qall<cr>", { desc = "Quit [A]ll" })
+vim.keymap.set("n", "<leader>qA", ":qall!<cr>", { desc = "Quit [A]ll (force)" })
 
 -- Quickfix list
 vim.keymap.set("n", "<leader>xx", function()
@@ -32,13 +32,13 @@ vim.keymap.set("n", "]q", function()
 end, { desc = "Next Quickfix" })
 
 -- Buffer management
-vim.keymap.set("n", "<S-h>", "<cmd>bprevious<cr>", { desc = "Prev Buffer" })
-vim.keymap.set("n", "<S-l>", "<cmd>bnext<cr>", { desc = "Next Buffer" })
-vim.keymap.set("n", "<leader>bd", "<cmd>bdelete<cr>", { desc = "[B]uffer [D]elete" })
-vim.keymap.set("n", "<leader>bD", "<cmd>bdelete!<cr>", { desc = "[B]uffer [D]elete (force)" })
-vim.keymap.set("n", "<leader>bn", "<cmd>bnext<cr>", { desc = "[B]uffer [N]ext" })
-vim.keymap.set("n", "<leader>bp", "<cmd>bprevious<cr>", { desc = "[B]uffer [P]revious" })
-vim.keymap.set("n", "<leader>bo", "<cmd>%bdelete|edit#|bdelete#<cr>", { desc = "[B]uffer [D]elete [O]thers" })
+vim.keymap.set("n", "<S-h>", ":bprevious<cr>", { desc = "Prev Buffer" })
+vim.keymap.set("n", "<S-l>", ":bnext<cr>", { desc = "Next Buffer" })
+vim.keymap.set("n", "<leader>bd", ":bdelete<cr>", { desc = "[B]uffer [D]elete" })
+vim.keymap.set("n", "<leader>bD", ":bdelete!<cr>", { desc = "[B]uffer [D]elete (force)" })
+vim.keymap.set("n", "<leader>bn", ":bnext<cr>", { desc = "[B]uffer [N]ext" })
+vim.keymap.set("n", "<leader>bp", ":bprevious<cr>", { desc = "[B]uffer [P]revious" })
+vim.keymap.set("n", "<leader>bo", ":%bdelete|edit#|bdelete#<cr>", { desc = "[B]uffer [D]elete [O]thers" })
 
 -- Center screen when jumping
 vim.keymap.set("n", "n", "nzzzv", { desc = "Next search result (centered)" })
@@ -61,10 +61,10 @@ vim.keymap.set("n", "<C-Left>", ":vertical resize -2<cr>", { desc = "Decrease wi
 vim.keymap.set("n", "<C-Right>", ":vertical resize +2<cr>", { desc = "Increase window width" })
 
 -- Move lines up/down
-vim.keymap.set("n", "<A-j>", ":m .+1<cr>==", { desc = "Move line down" })
-vim.keymap.set("n", "<A-k>", ":m .-2<cr>==", { desc = "Move line up" })
-vim.keymap.set("v", "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move selection down" })
-vim.keymap.set("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move selection up" })
+vim.keymap.set("n", "<M-j>", ":m .+1<cr>==", { desc = "Move line down" })
+vim.keymap.set("n", "<M-k>", ":m .-2<cr>==", { desc = "Move line up" })
+vim.keymap.set("v", "<M-j>", ":m '>+1<cr>gv=gv", { desc = "Move selection down" })
+vim.keymap.set("v", "<M-k>", ":m '<-2<cr>gv=gv", { desc = "Move selection up" })
 
 -- Better indenting - stay in visual mode
 vim.keymap.set("v", "<", "<gv", { desc = "Indent left" })

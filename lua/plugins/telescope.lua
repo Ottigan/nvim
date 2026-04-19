@@ -1,11 +1,11 @@
 return {
-    'nvim-telescope/telescope.nvim',
-    version = '*',
+    "nvim-telescope/telescope.nvim",
+    version = "*",
     dependencies = {
-        'nvim-lua/plenary.nvim',
-        { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
+        "nvim-lua/plenary.nvim",
+        { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
         { "nvim-telescope/telescope-ui-select.nvim" },
-        { "nvim-tree/nvim-web-devicons",              enabled = vim.g.have_nerd_font },
+        { "nvim-tree/nvim-web-devicons", enabled = vim.g.have_nerd_font },
     },
     config = function()
         -- [[ Configure Telescope ]]
@@ -21,7 +21,7 @@ return {
                     "--line-number",
                     "--column",
                     "--smart-case",
-                    "--glob",  -- Enable glob support
+                    "--glob", -- Enable glob support
                     "!.git/*", -- Exclude .git directory (example)
                 },
             },

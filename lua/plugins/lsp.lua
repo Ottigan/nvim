@@ -90,16 +90,21 @@ local function setup_lsp_keymaps()
     local builtin = require("telescope.builtin")
 
     local keymaps = {
-        { keys = "gra", callback = vim.lsp.buf.code_action,               desc = "Goto Code [A]ction",    mode = { "n", "x" } },
-        { keys = "gri", callback = builtin.lsp_implementations,           desc = "Goto [I]mplementation" },
-        { keys = "grn", callback = vim.lsp.buf.rename,                    desc = "Re[n]ame" },
-        { keys = "grr", callback = builtin.lsp_references,                desc = "Goto [R]eferences" },
-        { keys = "grt", callback = builtin.lsp_type_definitions,          desc = "Goto [T]ype Definition" },
-        { keys = "grx", callback = vim.lsp.codelens.run,                  desc = "Code Lens E[x]ecute" },
-        { keys = "grd", callback = builtin.lsp_definitions,               desc = "Goto [D]efinition" },
-        { keys = "grD", callback = vim.lsp.buf.declaration,               desc = "Goto [D]eclaration" },
-        { keys = "gO",  callback = builtin.lsp_document_symbols,          desc = "Document Symbols" },
-        { keys = "gW",  callback = builtin.lsp_dynamic_workspace_symbols, desc = "Workspace Symbols" },
+        {
+            keys = "gra",
+            callback = vim.lsp.buf.code_action,
+            desc = "Goto Code [A]ction",
+            mode = { "n", "x" },
+        },
+        { keys = "gri", callback = builtin.lsp_implementations, desc = "Goto [I]mplementation" },
+        { keys = "grn", callback = vim.lsp.buf.rename, desc = "Re[n]ame" },
+        { keys = "grr", callback = builtin.lsp_references, desc = "Goto [R]eferences" },
+        { keys = "grt", callback = builtin.lsp_type_definitions, desc = "Goto [T]ype Definition" },
+        { keys = "grx", callback = vim.lsp.codelens.run, desc = "Code Lens E[x]ecute" },
+        { keys = "grd", callback = builtin.lsp_definitions, desc = "Goto [D]efinition" },
+        { keys = "grD", callback = vim.lsp.buf.declaration, desc = "Goto [D]eclaration" },
+        { keys = "gO", callback = builtin.lsp_document_symbols, desc = "Document Symbols" },
+        { keys = "gW", callback = builtin.lsp_dynamic_workspace_symbols, desc = "Workspace Symbols" },
     }
 
     for _, mapping in ipairs(keymaps) do
@@ -131,33 +136,27 @@ local function register_servers()
             },
         },
         lua_ls = {
-            on_init = function(client)
-                if client.workspace_folders then
-                    local path = client.workspace_folders[1].name
-                    if vim.uv.fs_stat(path .. "/.luarc.json") or vim.uv.fs_stat(path .. "/.luarc.jsonc") then
-                        return
-                    end
-                end
-
-                client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua, {
+            cmd = { "lua-language-server" },
+            filetypes = { "lua" },
+            root_markers = { ".luarc.json", ".luarc.jsonc" },
+            -- NOTE: These will be merged with the configuration file.
+            settings = {
+                Lua = {
+                    -- Using stylua for formatting.
+                    format = { enable = false },
+                    hint = {
+                        enable = true,
+                        arrayIndex = "Disable",
+                    },
                     runtime = {
                         version = "LuaJIT",
-                        path = { "lua/?.lua", "lua/?/init.lua" },
                     },
                     workspace = {
                         checkThirdParty = false,
-                        library = vim.api.nvim_get_runtime_file("", true),
-                    },
-                })
-            end,
-            settings = {
-                Lua = {
-                    diagnostics = {
-                        globals = { "vim" },
-                        disable = { "inject-field" },
-                    },
-                    telemetry = {
-                        enable = false,
+                        library = {
+                            vim.env.VIMRUNTIME,
+                            "${3rd}/luv/library",
+                        },
                     },
                 },
             },

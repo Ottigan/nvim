@@ -1,3 +1,13 @@
+local function jest_cmd()
+    if vim.fn.filereadable("pnpm-lock.yaml") == 1 then
+        return "pnpm jest"
+    elseif vim.fn.filereadable("yarn.lock") == 1 then
+        return "yarn jest"
+    else
+        return "npx jest"
+    end
+end
+
 return {
     "nvim-neotest/neotest",
     dependencies = {
@@ -8,16 +18,6 @@ return {
         "nvim-neotest/neotest-go",
     },
     config = function()
-        local function jest_cmd()
-            if vim.fn.filereadable("pnpm-lock.yaml") == 1 then
-                return "pnpm jest"
-            elseif vim.fn.filereadable("yarn.lock") == 1 then
-                return "yarn jest"
-            else
-                return "npx jest"
-            end
-        end
-
         require("neotest").setup({
             adapters = {
                 require("neotest-go"),
@@ -51,7 +51,7 @@ return {
                 }),
             },
             status = { enabled = true, virtual_text = true, signs = true },
-            output = { enabled = true, open_on_run = true, },
+            output = { enabled = true, open_on_run = true },
             discovery = { concurrent = 0, enabled = false },
         })
     end,

@@ -23,11 +23,47 @@ return {
         },
     },
     keys = {
-        { "<leader>.",  function() Snacks.scratch() end,               desc = "Toggle Scratch Buffer" },
-        { "<leader>ss", function() Snacks.scratch.select() end,        desc = "[S]elect [S]cratch Buffer" },
-        { "<leader>n",  function() Snacks.notifier.show_history() end, desc = "Notification History" },
-        { "<leader>gg", function() Snacks.lazygit() end,               desc = "Lazygit" },
-        { "<leader>gl", function() Snacks.lazygit.log() end,           desc = "Lazygit Log" },
-        { "<leader>gf", function() Snacks.lazygit.log_file() end,      desc = "Lazygit Log File" },
+        {
+            "<leader>.",
+            function()
+                Snacks.scratch()
+            end,
+            desc = "Toggle Scratch Buffer",
+        },
+        {
+            "<leader>ss",
+            function()
+                Snacks.scratch.select()
+            end,
+            desc = "[S]elect [S]cratch Buffer",
+        },
+        {
+            "<leader>n",
+            function()
+                Snacks.notifier.show_history()
+            end,
+            desc = "Notification History",
+        },
+        {
+            "<leader>gg",
+            function()
+                Snacks.lazygit()
+            end,
+            desc = "Lazygit",
+        },
+        {
+            "<leader>gl",
+            function()
+                Snacks.lazygit.log()
+            end,
+            desc = "Lazygit Log",
+        },
+        {
+            "<leader>gf",
+            function()
+                Snacks.lazygit.log_file()
+            end,
+            desc = "Lazygit Log File",
+        },
     },
 }

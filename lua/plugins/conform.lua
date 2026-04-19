@@ -22,6 +22,7 @@ return {
             typescriptreact = { "eslint_d" },
             scss = { "stylelint" },
             yaml = { "prettierd" },
+            lua = { "stylua" },
         },
 
         default_format_opts = {

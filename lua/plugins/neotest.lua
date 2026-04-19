@@ -50,12 +50,9 @@ return {
                     end,
                 }),
             },
-            -- Show test status in the sign column
-            status = { virtual_text = true },
-            -- Nicer output
-            output = { open_on_run = true },
-            -- Disable test discovery, as it can be slow in large projects --
-            discovery = { enabled = false },
+            status = { enabled = true, virtual_text = true, signs = true },
+            output = { enabled = true, open_on_run = true, },
+            discovery = { concurrent = 0, enabled = false },
         })
     end,
     keys = {

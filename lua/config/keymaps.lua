@@ -22,7 +22,7 @@ vim.keymap.set("n", "<leader>bd", "<cmd>bdelete<cr>", { desc = "[B]uffer [D]elet
 vim.keymap.set("n", "<leader>bD", "<cmd>bdelete!<cr>", { desc = "[B]uffer [D]elete (force)" })
 vim.keymap.set("n", "<leader>bn", "<cmd>bnext<CR>", { desc = "[B]uffer [N]ext" })
 vim.keymap.set("n", "<leader>bp", "<cmd>bprevious<CR>", { desc = "[B]uffer [P]revious" })
-vim.keymap.set("n", "<leader>bx", "<cmd>%bdelete|edit#|bdelete#<CR>", { desc = "[B]uffer delete all e[X]cept current" })
+vim.keymap.set("n", "<leader>bo", "<cmd>%bdelete|edit#|bdelete#<CR>", { desc = "[B]uffer [D]elete [O]thers" })
 
 -- Window navigation
 vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })

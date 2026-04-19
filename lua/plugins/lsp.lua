@@ -114,10 +114,13 @@ local function setup_lsp_keymaps()
     end
 end
 
-local function register_servers()
+local function setup_servers()
     local servers = {
-        just = {},
+        just = {
+            cmd = { "just-lsp" },
+        },
         ts_ls = {
+            cmd = { "typescript-language-server", "--stdio" },
             init_options = {
                 preferences = {
                     autoImportFileExcludePatterns = { "react-redux" },
@@ -125,13 +128,20 @@ local function register_servers()
             },
         },
         gopls = {
+            cmd = { "gopls" },
+            root_markers = { "go.mod" },
+            filetypes = { "go", "gomod", "gowork", "gotmpl" },
             settings = {
                 gopls = {
-                    analyses = {
-                        unusedparams = true,
+                    hints = {
+                        assignVariableTypes = true,
+                        compositeLiteralFields = true,
+                        compositeLiteralTypes = true,
+                        constantValues = true,
+                        functionTypeParameters = true,
+                        parameterNames = true,
+                        rangeVariableTypes = true,
                     },
-                    staticcheck = true,
-                    gofumpt = true,
                 },
             },
         },
@@ -162,6 +172,7 @@ local function register_servers()
             },
         },
         cssls = {
+            cmd = { "vscode-css-language-server", "--stdio" },
             filetypes = { "css", "scss", "less" },
             settings = {
                 css = { validate = true },
@@ -170,10 +181,12 @@ local function register_servers()
             },
         },
         jsonls = {
+            cmd = { "vscode-json-language-server", "--stdio" },
+            filetypes = { "json", "jsonc" },
             settings = {
                 json = {
-                    schemas = require("schemastore").json.schemas(),
                     validate = { enable = true },
+                    schemas = require("schemastore").json.schemas(),
                 },
             },
         },
@@ -181,14 +194,8 @@ local function register_servers()
 
     require("mason-lspconfig").setup({ ensure_installed = vim.tbl_keys(servers) })
 
-    local function get_capabilities(server)
-        local capabilities = require("blink.cmp").get_lsp_capabilities()
-        local server_capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
-        return vim.tbl_deep_extend("force", {}, server, { capabilities = server_capabilities })
-    end
-
-    for name, server in pairs(servers) do
-        vim.lsp.config(name, get_capabilities(server))
+    for name, config in pairs(servers) do
+        vim.lsp.config(name, config)
         vim.lsp.enable(name)
     end
 end
@@ -280,18 +287,6 @@ return {
     dependencies = {
         { "mason-org/mason.nvim", opts = {} },
         "neovim/nvim-lspconfig",
-        {
-            "j-hui/fidget.nvim",
-            opts = {
-                notification = {
-                    window = {
-                        winblend = 0,
-                        normal_hl = "Comment",
-                    },
-                },
-            },
-        },
-        "saghen/blink.cmp",
         { "b0o/schemastore.nvim", lazy = true },
     },
     config = function()
@@ -301,7 +296,7 @@ return {
         setup_diagnostics()
         setup_diagnostic_keymaps()
         setup_lsp_keymaps()
-        register_servers()
+        setup_servers()
 
         vim.api.nvim_create_autocmd("LspAttach", {
             group = groups.attach,

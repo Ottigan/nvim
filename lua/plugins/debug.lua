@@ -85,7 +85,7 @@ return {
         vim.keymap.set("n", "<F3>", dap.step_over, { desc = "[D]ebug Step [O]ver" })
         vim.keymap.set("n", "<F4>", dap.step_out, { desc = "[D]ebug Step O[u]t" })
         vim.keymap.set("n", "<F5>", dap.step_back, { desc = "[D]ebug Step [B]ack" })
-        vim.keymap.set("n", "<F6>", dap.restart, { desc = "[D]ebug Reverse [C]ontinue" })
+        vim.keymap.set("n", "<F6>", dap.restart, { desc = "[D]ebug Restart" })
         vim.keymap.set("n", "<F7>", dapui.toggle, { desc = "[D]ebug Toggle [U]I" })
         vim.keymap.set("n", "<leader>db", dap.toggle_breakpoint, { desc = "[D]ebug Toggle [B] reakpoint" })
         vim.keymap.set("n", "<leader>dB", function()

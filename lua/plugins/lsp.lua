@@ -25,67 +25,6 @@ local function setup_diagnostics()
     })
 end
 
-local function setup_diagnostic_keymaps()
-    local keymaps = {
-        {
-            mode = "n",
-            keys = "<leader>xx",
-            callback = function()
-                if vim.fn.getqflist({ winid = 1 }).winid ~= 0 then
-                    vim.cmd.cclose()
-                    return
-                end
-
-                vim.diagnostic.setqflist()
-                vim.cmd.copen()
-            end,
-            desc = "Toggle Diagnostic Quickfi[x] List",
-        },
-        {
-            mode = "n",
-            keys = "<leader>xe",
-            callback = vim.diagnostic.open_float,
-            desc = "Show Diagnostic [E]rror",
-        },
-        {
-            mode = "n",
-            keys = "[d",
-            callback = function()
-                vim.diagnostic.jump({ count = -1 })
-            end,
-            desc = "Previous [D]iagnostic",
-        },
-        {
-            mode = "n",
-            keys = "]d",
-            callback = function()
-                vim.diagnostic.jump({ count = 1 })
-            end,
-            desc = "Next [D]iagnostic",
-        },
-        {
-            mode = "n",
-            keys = "[e",
-            callback = function()
-                vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR })
-            end,
-            desc = "Previous [E]rror",
-        },
-        {
-            mode = "n",
-            keys = "]e",
-            callback = function()
-                vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.ERROR })
-            end,
-            desc = "Next [E]rror",
-        },
-    }
-
-    for _, mapping in ipairs(keymaps) do
-        vim.keymap.set(mapping.mode, mapping.keys, mapping.callback, { desc = mapping.desc })
-    end
-end
-
 local function setup_lsp_keymaps()
     local builtin = require("telescope.builtin")
 
@@ -294,7 +233,6 @@ return {
 
         setup_filetypes()
         setup_diagnostics()
-        setup_diagnostic_keymaps()
         setup_lsp_keymaps()
         setup_servers()
 

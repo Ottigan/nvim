@@ -18,6 +18,11 @@ return {
     opts = {
         close_if_last_window = false,
         popup_border_style = "", -- or "" to use 'winborder' on Neovim v0.11+
+        filesystem = {
+            filtered_items = {
+                hide_dotfiles = false,
+            },
+        },
         window = {
             position = "float",
             mappings = {

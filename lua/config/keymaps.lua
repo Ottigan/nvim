@@ -16,21 +16,6 @@ vim.keymap.set("n", "<leader>qq", ":quit<cr>", { desc = "[Q]uit window" })
 vim.keymap.set("n", "<leader>qa", ":qall<cr>", { desc = "Quit [A]ll" })
 vim.keymap.set("n", "<leader>qA", ":qall!<cr>", { desc = "Quit [A]ll (force)" })
 
--- Quickfix list
-vim.keymap.set("n", "<leader>xx", function()
-    local success, err = pcall(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and vim.cmd.cclose or vim.cmd.copen)
-    if not success and err then
-        vim.notify(err, vim.log.levels.ERROR)
-    end
-end, { desc = "Quickfix List" })
-
-vim.keymap.set("n", "[q", function()
-    pcall(vim.cmd.cprev)
-end, { desc = "Previous Quickfix" })
-vim.keymap.set("n", "]q", function()
-    pcall(vim.cmd.cnext)
-end, { desc = "Next Quickfix" })
-
 -- Buffer management
 vim.keymap.set("n", "<S-h>", ":bprevious<cr>", { desc = "Prev Buffer" })
 vim.keymap.set("n", "<S-l>", ":bnext<cr>", { desc = "Next Buffer" })
@@ -81,7 +66,7 @@ local diagnostic_goto = function(next, severity)
     end
 end
 
-vim.keymap.set("n", "<leader>xl", vim.diagnostic.open_float, { desc = "Line Diagnostics" })
+vim.keymap.set("n", "<leader>xh", vim.diagnostic.open_float, { desc = "Hover Diagnostic" })
 vim.keymap.set("n", "]d", diagnostic_goto(true), { desc = "Next Diagnostic" })
 vim.keymap.set("n", "[d", diagnostic_goto(false), { desc = "Prev Diagnostic" })
 vim.keymap.set("n", "]e", diagnostic_goto(true, "ERROR"), { desc = "Next Error" })
